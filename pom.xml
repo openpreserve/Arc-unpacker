@@ -9,6 +9,11 @@
     <artifactId>arc-unpacker</artifactId>
     <version>0.1-SNAPSHOT</version>
 
+    <scm>
+        <connection>scm:git:http://github.com/blekinge/Arc-unpacker.git</connection>
+        <developerConnection>scm:git:ssh://github.com/blekinge/Arc-unpacker.git</developerConnection>
+    </scm>
+
 
     <dependencies>
         <dependency>
