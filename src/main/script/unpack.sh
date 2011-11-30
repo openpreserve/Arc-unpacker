@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #
 # Usage: ./unpack.sh file.arc extractDir

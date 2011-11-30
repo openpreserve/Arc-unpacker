@@ -73,7 +73,7 @@ public class Archive {
             }
             log.info( "Archive file " + file + " structure evaluated: " + files + " URIs, " + blocks + " blocks." );
         } catch( Exception e ) {
-            log.error( "ArchiveFilesystem(): " + e.getMessage(), e );
+            log.error( "ArchiveUnpacker(): " + e.getMessage(), e );
         }
     }
 
