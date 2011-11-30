@@ -5,7 +5,7 @@
 
     <groupId>dk.statsbiblioteket.scape</groupId>
     <artifactId>arc-unpacker</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
 
     <scm>
         <connection>scm:git:http://github.com/blekinge/Arc-unpacker.git</connection>
