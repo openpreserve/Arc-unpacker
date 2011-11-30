@@ -10,7 +10,6 @@
     <scm>
         <connection>scm:git:git@github.com:blekinge/Arc-unpacker.git</connection>
         <developerConnection>scm:git:git@github.com:blekinge/Arc-unpacker.git</developerConnection>
-        <url>scm:git:git@github.com:blekinge/Arc-unpacker.git</url>
     </scm>
 
 
