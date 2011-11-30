@@ -7,12 +7,79 @@
     <artifactId>arc-unpacker</artifactId>
     <version>0.1-SNAPSHOT</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+     <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <comments>Copyright (c) 2011 State and University Library.
+                NOTE, I believe this project only contains Apache, not
+                LGPL code, but this will be definitely checked in the
+                next version</comments>
+        </license>
+    </licenses>
+
     <scm>
         <connection>scm:git:ssh://github.com/blekinge/Arc-unpacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/blekinge/Arc-unpacker.git</developerConnection>
         <url>http://github.com/blekinge/Arc-unpacker.git</url>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <id>sbforge-nexus</id>
+            <name>SBForgeb Nexus Repo manager</name>
+            <url>https://sbforge.org/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>sbforge-nexus</id>
+            <name>SBForgeb Nexus Repo manager</name>
+            <url>https://sbforge.org/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+
+    <profiles>
+        <!-- START SNIPPET: release-profile -->
+        <profile>
+            <id>sbforge-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.1.2</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.7</version>
+                        <configuration>
+                            <encoding>${project.build.sourceEncoding}</encoding>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
