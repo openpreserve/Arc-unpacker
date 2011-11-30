@@ -8,8 +8,9 @@
     <version>0.1-SNAPSHOT</version>
 
     <scm>
-        <connection>scm:git:git@github.com:blekinge/Arc-unpacker.git</connection>
-        <developerConnection>scm:git:git@github.com:blekinge/Arc-unpacker.git</developerConnection>
+        <connection>scm:git:ssh://github.com/blekinge/Arc-unpacker.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/blekinge/Arc-unpacker.git</developerConnection>
+        <url>http://github.com/blekinge/Arc-unpacker.git</url>
     </scm>
 
 
