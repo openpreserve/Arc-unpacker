@@ -7,7 +7,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.google.common.io.Files;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HeaderElement;
 import org.apache.commons.httpclient.HttpParser;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.archive.io.ArchiveReader;
@@ -27,9 +31,20 @@ public class Archive {
 
     private File file;
     private File outdir;
-    //private ArchiveReader archivereader;
+    private int minReturnCode=0,maxReturnCode=1000;
+    private Naming naming = Naming.URL;
 
+    public void setMinReturnCode(int minReturnCode) {
+        this.minReturnCode = minReturnCode;
+    }
 
+    public void setMaxReturnCode(int maxReturnCode) {
+        this.maxReturnCode = maxReturnCode;
+    }
+
+    public void setNaming(Naming naming) {
+        this.naming = naming;
+    }
 
     public class ArchiveEntry {
         ArchiveRecordHeader header;
@@ -57,7 +72,9 @@ public class Archive {
             dirEntry.lastModified = ( int ) ( file.lastModified() / 1000L );
 
             ArchiveReader archivereader = ArchiveReaderFactory.get(file, 0);
+
             for (ArchiveRecord record : archivereader) {
+
                 ArchiveEntry archiveEntry = getEntry(record);
                 if (archiveEntry != null) {
                     blocks += (archiveEntry.header.getLength() + blockSize - 1) / blockSize;
@@ -66,9 +83,10 @@ public class Archive {
                                 (int) archiveEntry.header.getLength() - archiveEntry.header.getContentBegin());
                         if (readEntry(record, archiveEntry, buf) > 0) {
                             writeFile(archiveEntry, buf);
+                            files++;
                         }
                     }
-                    files++;
+
                 }
             }
             log.info( "Archive file " + file + " structure evaluated: " + files + " URIs, " + blocks + " blocks." );
@@ -93,7 +111,24 @@ public class Archive {
                 if( ( record instanceof ARCRecord ) || archiveEntry.header.getHeaderValue( HEADER_KEY_TYPE ).equals( "response" ) ) {
                     String url = archiveEntry.header.getUrl();
                     if( url.matches( "^http.*$" ) ) {
-                        HttpParser.parseHeaders( record, DEFAULT_ENCODING );
+                        Header[] headers = HttpParser.parseHeaders(record, DEFAULT_ENCODING);
+                        //first line is of the format   HttpClient-Bad-Header-Line-Failed-Parse : HTTP/1.0 200 OK
+                        if (headers != null){
+                            Header firstHeader = headers[0];
+                            if (firstHeader.getName().equals("HttpClient-Bad-Header-Line-Failed-Parse")){
+                                if (firstHeader.getValue().startsWith("HTTP/1.")){
+                                    //We have a http response header
+                                    String[] elements = firstHeader.getValue().split(" ");
+                                    if (elements.length == 3){
+                                        String codeString = elements[1];
+                                        int returnCode = Integer.parseInt(codeString);
+                                        if (!(returnCode >= minReturnCode && returnCode <= maxReturnCode)){
+                                            return -1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 BufferedInputStream input = new BufferedInputStream( record );
@@ -128,7 +163,9 @@ public class Archive {
     }
 
     private ArchiveEntry getEntry(WARCRecord record) throws ParseException {
+
         ArchiveRecordHeader header = record.getHeader();
+
         ArchiveEntry warcEntry = new ArchiveEntry();
         String recordType = ( String ) header.getHeaderValue( HEADER_KEY_TYPE );
         if( header.getHeaderFieldKeys().contains( HEADER_KEY_URI ) ) {
@@ -144,7 +181,17 @@ public class Archive {
             warcEntry.offset = header.getOffset();
             warcEntry.position = 0;
             warcEntry.lastModified =  ( dateformat.parse( header.getHeaderValue( HEADER_KEY_DATE ).toString() ).getTime() / 1000L );
-            warcEntry.path = path;
+            switch (naming){
+                case URL:
+                    warcEntry.path = path;
+                    break;
+                case MD5:
+                    warcEntry.path = DigestUtils.md5Hex(path);
+                    break;
+                case OFFSET:
+                    warcEntry.path = file.getName()+":"+warcEntry.offset;
+                    break;
+            }
             return warcEntry;
         } else {
             return null;
@@ -154,6 +201,9 @@ public class Archive {
 
 
     private ArchiveEntry getEntry(ARCRecord record) throws ParseException {
+        if (!(record.getStatusCode() >= minReturnCode && record.getStatusCode() <=maxReturnCode)){
+            return null;
+        }
         ArchiveRecordHeader header = record.getHeader();
         ArchiveEntry arcEntry = new ArchiveEntry();
         SimpleDateFormat dateformat = new SimpleDateFormat( "yyyyMMddHHmmss" );
@@ -165,7 +215,17 @@ public class Archive {
         arcEntry.offset = header.getOffset();
         arcEntry.position = 0;
         arcEntry.lastModified =  ( dateformat.parse( header.getDate() ).getTime() / 1000L );
-        arcEntry.path = path;
+        switch (naming){
+            case URL:
+                arcEntry.path = path;
+                break;
+            case MD5:
+                arcEntry.path = DigestUtils.md5Hex(path);
+                break;
+            case OFFSET:
+                arcEntry.path = file.getName()+":"+arcEntry.offset;
+                break;
+        }
         return arcEntry;
     }
 
@@ -194,4 +254,7 @@ public class Archive {
     }
 
 
+    public enum Naming {
+        URL,OFFSET, MD5;
+    }
 }

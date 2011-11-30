@@ -18,7 +18,24 @@ public class ArchiveTest {
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
+        archive.setNaming(Archive.Naming.URL);
+        archive.setMinReturnCode(200);
+        archive.setMaxReturnCode(299);
         archive.unpack(unpack);
         FileUtils.deleteDirectory(unpack);
     }
+
+    @org.junit.Test
+    public void testMain2() throws Exception {
+        Archive archive = new Archive(new File("src/test/resources/test.warc.gz"));
+        File unpack = new File("build/testunpack");
+
+        FileUtils.deleteDirectory(unpack);
+        archive.setNaming(Archive.Naming.OFFSET);
+        archive.setMinReturnCode(200);
+        archive.setMaxReturnCode(299);
+        archive.unpack(unpack);
+        FileUtils.deleteDirectory(unpack);
+    }
+
 }
