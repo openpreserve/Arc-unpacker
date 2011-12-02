@@ -8,4 +8,4 @@ echo "Script home dir $HOME"
 
 echo "Using this JDK_HOME=$JDK_HOME"
 
-$JDK_HOME/bin/java -cp "$HOME/lib/*" dk.statsbiblioteket.scape.arcunpacker.Archive "$1" "$2"
+$JDK_HOME/bin/java -cp "$HOME/lib/*" dk.statsbiblioteket.scape.arcunpacker.Archive $*

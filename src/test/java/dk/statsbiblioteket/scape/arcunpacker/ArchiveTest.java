@@ -14,13 +14,13 @@ import java.io.File;
 public class ArchiveTest {
     @org.junit.Test
     public void testMain() throws Exception {
-        Archive archive = new Archive(new File("src/test/resources/test.arc"));
+        Archive archive = new Archive(new File("src/test/resources/test2.arc"));
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
-        archive.setNaming(Archive.Naming.URL);
-        archive.setMinReturnCode(200);
-        archive.setMaxReturnCode(299);
+        archive.setNaming(Archive.Naming.OFFSET);
+        //archive.setMinReturnCode(200);
+        //archive.setMaxReturnCode(299);
         archive.unpack(unpack);
         FileUtils.deleteDirectory(unpack);
     }
