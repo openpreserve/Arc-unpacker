@@ -10,7 +10,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-     <licenses>
+    <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
@@ -27,6 +27,14 @@
         <url>http://github.com/blekinge/Arc-unpacker.git</url>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>archive-releases</id>
+            <name>Archive Releases</name>
+            <url>http://builds.archive.org:8080/maven2</url>
+        </repository>
+
+    </repositories>
     <distributionManagement>
         <repository>
             <id>sbforge-nexus</id>
