@@ -10,11 +10,16 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.deb.name>${groupId}.${artifactId}</maven.deb.name>
-        <maven.deb.libfolder>/usr/share/${project.groupId}.${project.artifactId}</maven.deb.libfolder>
-        <maven.deb.docfolder>/usr/share/doc/${project.groupId}.${project.artifactId}</maven.deb.docfolder>
+        <maven.deb.libfolder>/usr/share/${maven.deb.name}</maven.deb.libfolder>
+        <maven.deb.docfolder>/usr/share/doc/${maven.deb.name}</maven.deb.docfolder>
         <maven.deb.manfolder>/usr/share/man</maven.deb.manfolder>
         <maven.deb.binfolder>/usr/bin</maven.deb.binfolder>
         <maven.deb.assembly>debian-prepare</maven.deb.assembly>
+        <maven.deb.description>unpacker application for arc and warc files, based on the heritrix crawler.</maven.deb.description>
+        <maven.deb.extendedDescription>This is the extended Description</maven.deb.extendedDescription>
+        <maven.deb.maintainer><![CDATA[Asger Askov Blekinge <abr@statsbiblioteket.dk>]]></maven.deb.maintainer>
+        <maven.deb.copyright>Copyright (C) 2012 by State and University Library, Denmark</maven.deb.copyright>
+        <maven.deb.license>Apache-2.0</maven.deb.license>
     </properties>
     <licenses>
         <license>
@@ -199,17 +204,12 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <!-- this is used for inheritance merges -->
                         <phase>package</phase>
-                        <!-- append to the packaging phase. -->
                         <goals>
                             <goal>single</goal>
-                            <!-- goals == mojos -->
                         </goals>
-
                     </execution>
                 </executions>
-
             </plugin>
 
             <plugin>
@@ -226,7 +226,7 @@
                         <configuration>
                             <deb>${project.build.directory}/${artifactId}${version}-java.deb</deb>
                             <controlDir>${project.build.directory}/classes/debian/control/</controlDir>
-                            <timestamped>true</timestamped>
+<!--                            <timestamped>true</timestamped>-->
                             <!--
                             ||   Element    || Description                                                                 || Required                                                       ||
 
@@ -313,6 +313,7 @@
                                         <filemode>755</filemode>
                                     </mapper>
                                 </data>
+
                                 <data>
                                     <src>${project.build.directory}/classes/debian/copyright</src>
                                     <type>directory</type>
@@ -321,6 +322,7 @@
                                         <prefix>${maven.deb.docfolder}</prefix>
                                     </mapper>
                                 </data>
+
                                 <data>
                                     <src>${project.build.directory}/classes/debian/changelog</src>
                                     <type>directory</type>
@@ -329,6 +331,7 @@
                                         <prefix>${maven.deb.docfolder}</prefix>
                                     </mapper>
                                 </data>
+
 
                                 <data>
                                     <src>${project.build.directory}/classes/debian/man</src>

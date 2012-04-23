@@ -1,9 +1,9 @@
-Package: [[groupId]].[[artifactId]]
-Version: [[version]]
+Package: ${groupId}.${artifactId}
+Version: ${version}
 Section: java
 Priority: optional
 Architecture: all
 Depends: default-jre (>= 1.5)
-Maintainer: Asger Askov Blekinge <abr@statsbiblioteket.dk>
-Description: unpacker app for arc and warc files, based on the heritrix crawler
- This is the extended description
+Maintainer: ${maven.deb.maintainer}
+Description: ${maven.deb.description}
+ ${maven.deb.extendedDescription}
