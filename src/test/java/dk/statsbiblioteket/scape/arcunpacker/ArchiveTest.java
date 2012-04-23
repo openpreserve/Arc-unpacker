@@ -13,6 +13,11 @@ import java.io.File;
  */
 public class ArchiveTest {
     @org.junit.Test
+    public void testUsage(){
+        Archive.printUsage();
+    }
+
+    @org.junit.Test
     public void testMain() throws Exception {
         Archive archive = new Archive(new File("src/test/resources/test2.arc"));
         File unpack = new File("build/testunpack");

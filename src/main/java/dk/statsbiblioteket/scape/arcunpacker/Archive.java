@@ -7,10 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.google.common.io.Files;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HeaderElement;
@@ -259,13 +256,18 @@ public class Archive {
     static{
         options = new Options();
         options.addOption(INFILE_OPTION, true,
-                          "Data file location");
+                          "Data file to extract");
         options.addOption(OUTDIR_OPTION, true,
-                          "Directory to extract to. " + DEFAULT_OUTPUT_FILE + " by default ");
+                          "Directory to extract to. " + "'"+DEFAULT_OUTPUT_FILE+"' by default ");
         options.addOption(MINRESPONSE_OPTION,true, "Minimum http response code. "+DEFAULT_MINRESPONSE+" by default");
         options.addOption(MAXRESPONSE_OPTION,true, "Maximum http response code. "+DEFAULT_MAXRESPONSE+" by default");
         options.addOption(NAME_OPTION,true, "Naming. One of "+Naming.MD5+","+Naming.OFFSET+","+Naming.URL+". "+Naming.URL+" by default");
 
+    }
+
+    public static void printUsage(){
+        final HelpFormatter usageFormatter = new HelpFormatter();
+        usageFormatter.printHelp("arc-unpack",options,true);
     }
 
 
@@ -277,20 +279,23 @@ public class Archive {
             cmd = parser.parse(options, args);
         } catch (org.apache.commons.cli.ParseException e) {
             System.err.println("Error parsing arguments");
-            e.printStackTrace();
+            printUsage();
             System.exit(1);
             return;
         }
 
+/*
         for (String arg : args) {
             System.out.println(arg);
         }
+*/
 
         File warcFile;
         if (cmd.hasOption(INFILE_OPTION)){
             warcFile = new File(cmd.getOptionValue(INFILE_OPTION));
         } else {
             System.err.println("Must specify an input file");
+            printUsage();
             System.exit(1);
             return;
 
@@ -336,8 +341,6 @@ public class Archive {
             System.err.println("Failed to Unpack");
             e.printStackTrace();
             System.exit(1);
-            return;
-
         }
     }
 

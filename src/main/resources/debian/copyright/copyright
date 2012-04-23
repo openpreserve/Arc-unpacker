@@ -1,0 +1,6 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Files: *
+Copyright:
+    Copyright (C) 2012 by State and University Library, Denmark
+License: Apache-2.0
+    /usr/share/common-licenses/Apache-2.0
