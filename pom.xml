@@ -5,7 +5,7 @@
 
     <groupId>dk.statsbiblioteket.scape</groupId>
     <artifactId>arc-unpacker</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -150,14 +150,14 @@
                         <configuration>
                             <target>
                                 <exec executable="gzip">
-                                    <arg value="-9"/>
-                                    <arg value="-r"/>
-                                    <arg value="${project.build.directory}/classes/debian/man/"/>
+                                    <arg value="-9" />
+                                    <arg value="-r" />
+                                    <arg value="${project.build.directory}/classes/debian/man/" />
                                 </exec>
                                 <exec executable="gzip">
-                                    <arg value="-9"/>
-                                    <arg value="-r"/>
-                                    <arg value="${project.build.directory}/classes/debian/changelog/"/>
+                                    <arg value="-9" />
+                                    <arg value="-r" />
+                                    <arg value="${project.build.directory}/classes/debian/changelog/" />
                                 </exec>
                             </target>
                         </configuration>
