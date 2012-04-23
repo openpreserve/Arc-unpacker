@@ -1,0 +1,20 @@
+${maven.deb.name} (0.3) unstable; urgency=low
+ * Added the archive.org maven repository, so we can build without local caches.
+ * Added the debian package functionality
+
+ -- Asger Askov Blekinge <abr@statsbiblioteket.dk> Mon, 23 Apr 2011 15:00:00 +0100
+
+${maven.deb.name} (0.2) unstable; urgency=low
+  * Added the command line interface
+  * Added the min/max response code restriction
+  * Added the multiple naming of extracted resources
+
+ -- Asger Askov Blekinge <abr@statsbiblioteket.dk> Fri, 2 Dec 2011 17:34:00 +0100
+
+${maven.deb.name} (0.1) unstable; urgency=low
+  * Updated maven structure for better git support
+  * Stuff actually works
+  * First release
+
+ -- Asger Askov Blekinge <abr@statsbiblioteket.dk> Mon, 30 Nov 2011 15:21:00 +0100
+
