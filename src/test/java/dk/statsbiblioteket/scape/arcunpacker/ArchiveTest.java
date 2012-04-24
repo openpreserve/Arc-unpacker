@@ -19,7 +19,7 @@ public class ArchiveTest {
 
     @org.junit.Test
     public void testMain() throws Exception {
-        Archive archive = new Archive(new File("src/test/resources/test2.arc"));
+        Archive archive = new Archive(new File("src/test/resources/IAH-20080430204825-00000-blackbook.arc.gz"));
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
@@ -32,7 +32,7 @@ public class ArchiveTest {
 
     @org.junit.Test
     public void testMain2() throws Exception {
-        Archive archive = new Archive(new File("src/test/resources/test.warc.gz"));
+        Archive archive = new Archive(new File("src/test/resources/IAH-20080430204825-00000-blackbook.warc.gz"));
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
