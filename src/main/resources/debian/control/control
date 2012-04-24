@@ -1,5 +1,5 @@
-Package: ${groupId}.${artifactId}
-Version: ${version}
+Package: ${maven.deb.name}
+Version: ${maven.deb.version}
 Section: java
 Priority: optional
 Architecture: all

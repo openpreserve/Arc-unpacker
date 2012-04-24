@@ -23,7 +23,7 @@
 
         <fileSet>
             <outputDirectory>bin</outputDirectory>
-            <directory>src/main/script</directory>
+            <directory>src/main/scripts</directory>
             <fileMode>0755</fileMode>
         </fileSet>
 

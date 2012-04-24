@@ -9,7 +9,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.deb.name>${groupId}.${artifactId}</maven.deb.name>
+        <maven.deb.name>${artifactId}</maven.deb.name>
+        <maven.deb.version>${project.version}-${maven.build.timestamp}</maven.deb.version>
         <maven.deb.libfolder>/usr/share/${maven.deb.name}</maven.deb.libfolder>
         <maven.deb.docfolder>/usr/share/doc/${maven.deb.name}</maven.deb.docfolder>
         <maven.deb.manfolder>/usr/share/man</maven.deb.manfolder>
