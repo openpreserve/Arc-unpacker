@@ -5,12 +5,12 @@
 
     <groupId>dk.statsbiblioteket.scape</groupId>
     <artifactId>arc-unpacker</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.deb.name>${artifactId}</maven.deb.name>
-        <maven.deb.version>${project.version}-${maven.build.timestamp}</maven.deb.version>
+        <maven.deb.version>${project.version}</maven.deb.version>
         <maven.deb.libfolder>/usr/share/${maven.deb.name}</maven.deb.libfolder>
         <maven.deb.docfolder>/usr/share/doc/${maven.deb.name}</maven.deb.docfolder>
         <maven.deb.manfolder>/usr/share/man</maven.deb.manfolder>
@@ -225,7 +225,7 @@
                             <goal>jdeb</goal>
                         </goals>
                         <configuration>
-                            <deb>${project.build.directory}/${artifactId}${version}-java.deb</deb>
+                            <deb>${project.build.directory}/${maven.deb.name}_${maven.deb.version}_all.deb</deb>
                             <controlDir>${project.build.directory}/classes/debian/control/</controlDir>
 <!--                            <timestamped>true</timestamped>-->
                             <!--
