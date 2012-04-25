@@ -7,12 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.google.common.io.Files;
-import org.apache.commons.cli.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HeaderElement;
 import org.apache.commons.httpclient.HttpParser;
-import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.archive.io.ArchiveReader;
@@ -25,27 +22,13 @@ import org.archive.io.warc.WARCRecord;
 
 import static org.archive.io.warc.WARCConstants.*;
 
-public class Archive {
+public class WebArchiveFile {
 
-    private static final Log log = LogFactory.getLog(Archive.class );
+    private static final Log log = LogFactory.getLog(WebArchiveFile.class );
     private static final int blockSize = 512;
 
-    private File file;
+    private File archiveFile;
     private File outdir;
-    private int minReturnCode=0,maxReturnCode=1000;
-    private Naming naming = Naming.URL;
-
-    public void setMinReturnCode(int minReturnCode) {
-        this.minReturnCode = minReturnCode;
-    }
-
-    public void setMaxReturnCode(int maxReturnCode) {
-        this.maxReturnCode = maxReturnCode;
-    }
-
-    public void setNaming(Naming naming) {
-        this.naming = naming;
-    }
 
     public class ArchiveEntry {
         ArchiveRecordHeader header;
@@ -57,23 +40,23 @@ public class Archive {
         String mimeType;
     }
 
-    public Archive(File file) {
-        this.file = file;
+    public WebArchiveFile(File archiveFile) {
+        this.archiveFile = archiveFile;
     }
 
-    public void unpack(File outdir){
+    public void unpack(File outdir,UnpackConfig unpackConfig){
         this.outdir = outdir;
 
         try {
-            int files = 0;
+            int filesExtracted = 0;
             int blocks = 0;
 
             ArchiveEntry dirEntry = new ArchiveEntry();
             dirEntry.header = null;
             dirEntry.isDirectory = true;
-            dirEntry.lastModified = ( int ) ( file.lastModified() / 1000L );
+            dirEntry.lastModified = ( int ) ( archiveFile.lastModified() / 1000L );
 
-            ArchiveReader archivereader = ArchiveReaderFactory.get(file, 0);
+            ArchiveReader archivereader = ArchiveReaderFactory.get(archiveFile, 0);
 
             for (ArchiveRecord record : archivereader) {
 
@@ -85,13 +68,13 @@ public class Archive {
                                 (int) archiveEntry.header.getLength() - archiveEntry.header.getContentBegin());
                         if (readEntry(record, archiveEntry, buf) > 0) {
                             writeFile(archiveEntry, buf);
-                            files++;
+                            filesExtracted++;
                         }
                     }
 
                 }
             }
-            log.info( "Archive file " + file + " structure evaluated: " + files + " URIs, " + blocks + " blocks." );
+            log.info( "WebArchiveFile archiveFile " + archiveFile + " structure evaluated: " + filesExtracted + " URIs, " + blocks + " blocks." );
         } catch( Exception e ) {
             log.error( "ArchiveUnpacker(): " + e.getMessage(), e );
         }
@@ -194,7 +177,7 @@ public class Archive {
                     warcEntry.path = DigestUtils.md5Hex(path)+":"+warcEntry.mimeType;
                     break;
                 case OFFSET:
-                    warcEntry.path = file.getName()+":"+warcEntry.offset+":"+warcEntry.mimeType;
+                    warcEntry.path = archiveFile.getName()+":"+warcEntry.offset+":"+warcEntry.mimeType;
                     break;
             }
             return warcEntry;
@@ -228,120 +211,10 @@ public class Archive {
                 arcEntry.path = DigestUtils.md5Hex(path)+":"+arcEntry.mimeType;
                 break;
             case OFFSET:
-                arcEntry.path = file.getName()+":"+arcEntry.offset+":"+arcEntry.mimeType;
+                arcEntry.path = archiveFile.getName()+":"+arcEntry.offset+":"+arcEntry.mimeType;
                 break;
         }
         return arcEntry;
-    }
-
-
-    private static Options options;
-
-    private static final String INFILE_OPTION = "f";
-
-    private static final String OUTDIR_OPTION = "o";
-
-    private static final String DEFAULT_OUTPUT_FILE = ".";
-
-    private static final String MINRESPONSE_OPTION = "minResp";
-
-    private static int DEFAULT_MINRESPONSE = 0;
-
-    private static final int DEFAULT_MAXRESPONSE = 1000;
-
-    private static final String MAXRESPONSE_OPTION = "maxResp";
-
-    private static final String NAME_OPTION = "naming";
-
-    static{
-        options = new Options();
-        options.addOption(INFILE_OPTION, true,
-                          "Data file to extract");
-        options.addOption(OUTDIR_OPTION, true,
-                          "Directory to extract to. " + "'"+DEFAULT_OUTPUT_FILE+"' by default ");
-        options.addOption(MINRESPONSE_OPTION,true, "Minimum http response code. "+DEFAULT_MINRESPONSE+" by default");
-        options.addOption(MAXRESPONSE_OPTION,true, "Maximum http response code. "+DEFAULT_MAXRESPONSE+" by default");
-        options.addOption(NAME_OPTION,true, "Naming. One of "+Naming.MD5+","+Naming.OFFSET+","+Naming.URL+". "+Naming.URL+" by default");
-
-    }
-
-    public static void printUsage(){
-        final HelpFormatter usageFormatter = new HelpFormatter();
-        usageFormatter.printHelp("arc-unpack",options,true);
-    }
-
-
-    public static void main( String[] args ) {
-
-        CommandLineParser parser = new PosixParser();
-        CommandLine cmd;
-        try {
-            cmd = parser.parse(options, args);
-        } catch (org.apache.commons.cli.ParseException e) {
-            System.err.println("Error parsing arguments");
-            printUsage();
-            System.exit(1);
-            return;
-        }
-
-/*
-        for (String arg : args) {
-            System.out.println(arg);
-        }
-*/
-
-        File warcFile;
-        if (cmd.hasOption(INFILE_OPTION)){
-            warcFile = new File(cmd.getOptionValue(INFILE_OPTION));
-        } else {
-            System.err.println("Must specify an input file");
-            printUsage();
-            System.exit(1);
-            return;
-
-        }
-        File outdir;
-        if (cmd.hasOption(OUTDIR_OPTION)){
-            outdir = new File(cmd.getOptionValue(OUTDIR_OPTION));
-        } else {
-            outdir = new File(DEFAULT_OUTPUT_FILE);
-        }
-        int minResponse;
-        if (cmd.hasOption(MINRESPONSE_OPTION)){
-            minResponse = Integer.parseInt(cmd.getOptionValue(MINRESPONSE_OPTION));
-        } else {
-            minResponse = DEFAULT_MINRESPONSE;
-        }
-        int maxResponse;
-        if (cmd.hasOption(MAXRESPONSE_OPTION)){
-            maxResponse = Integer.parseInt(cmd.getOptionValue(MAXRESPONSE_OPTION));
-        } else {
-            maxResponse = DEFAULT_MAXRESPONSE;
-        }
-        Naming naming;
-        if (cmd.hasOption(NAME_OPTION)){
-            naming = Naming.valueOf(cmd.getOptionValue(NAME_OPTION));
-        } else {
-            naming = Naming.MD5;
-        }
-
-
-
-
-
-
-
-        try {
-            Archive archive = new Archive(warcFile);
-            archive.setMaxReturnCode(maxResponse);
-            archive.setMinReturnCode(minResponse);
-            archive.setNaming(naming);
-            archive.unpack(outdir);
-        } catch( Exception e ) {
-            System.err.println("Failed to Unpack");
-            e.printStackTrace();
-            System.exit(1);
-        }
     }
 
 

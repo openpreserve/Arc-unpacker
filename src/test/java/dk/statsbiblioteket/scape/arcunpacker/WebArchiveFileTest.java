@@ -11,35 +11,35 @@ import java.io.File;
  * Time: 1:46 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ArchiveTest {
+public class WebArchiveFileTest {
     @org.junit.Test
     public void testUsage(){
-        Archive.printUsage();
+        WebArchiveFile.printUsage();
     }
 
     @org.junit.Test
     public void testMain() throws Exception {
-        Archive archive = new Archive(new File("src/test/resources/IAH-20080430204825-00000-blackbook.arc.gz"));
+        WebArchiveFile webArchiveFile = new WebArchiveFile(new File("src/test/resources/IAH-20080430204825-00000-blackbook.arc.gz"));
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
-        archive.setNaming(Archive.Naming.OFFSET);
-        //archive.setMinReturnCode(200);
-        //archive.setMaxReturnCode(299);
-        archive.unpack(unpack);
+        webArchiveFile.setNaming(WebArchiveFile.Naming.OFFSET);
+        //webArchiveFile.setMinReturnCode(200);
+        //webArchiveFile.setMaxReturnCode(299);
+        webArchiveFile.unpack(unpack);
         FileUtils.deleteDirectory(unpack);
     }
 
     @org.junit.Test
     public void testMain2() throws Exception {
-        Archive archive = new Archive(new File("src/test/resources/IAH-20080430204825-00000-blackbook.warc.gz"));
+        WebArchiveFile webArchiveFile = new WebArchiveFile(new File("src/test/resources/IAH-20080430204825-00000-blackbook.warc.gz"));
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
-        archive.setNaming(Archive.Naming.OFFSET);
-        archive.setMinReturnCode(200);
-        archive.setMaxReturnCode(299);
-        archive.unpack(unpack);
+        webArchiveFile.setNaming(WebArchiveFile.Naming.OFFSET);
+        webArchiveFile.setMinReturnCode(200);
+        webArchiveFile.setMaxReturnCode(299);
+        webArchiveFile.unpack(unpack);
         FileUtils.deleteDirectory(unpack);
     }
 
