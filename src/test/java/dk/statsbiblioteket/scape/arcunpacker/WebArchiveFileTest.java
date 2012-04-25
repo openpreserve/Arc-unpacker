@@ -14,7 +14,7 @@ import java.io.File;
 public class WebArchiveFileTest {
     @org.junit.Test
     public void testUsage(){
-        WebArchiveFile.printUsage();
+        CLI.printUsage();
     }
 
     @org.junit.Test
@@ -23,10 +23,8 @@ public class WebArchiveFileTest {
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
-        webArchiveFile.setNaming(WebArchiveFile.Naming.OFFSET);
-        //webArchiveFile.setMinReturnCode(200);
-        //webArchiveFile.setMaxReturnCode(299);
-        webArchiveFile.unpack(unpack);
+        UnpackConfig config = new UnpackConfig(0, 1000, UnpackConfig.Naming.OFFSET);
+        webArchiveFile.unpack(unpack,config);
         FileUtils.deleteDirectory(unpack);
     }
 
@@ -36,10 +34,8 @@ public class WebArchiveFileTest {
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
-        webArchiveFile.setNaming(WebArchiveFile.Naming.OFFSET);
-        webArchiveFile.setMinReturnCode(200);
-        webArchiveFile.setMaxReturnCode(299);
-        webArchiveFile.unpack(unpack);
+        UnpackConfig config = new UnpackConfig(200, 299, UnpackConfig.Naming.OFFSET);
+        webArchiveFile.unpack(unpack,config);
         FileUtils.deleteDirectory(unpack);
     }
 

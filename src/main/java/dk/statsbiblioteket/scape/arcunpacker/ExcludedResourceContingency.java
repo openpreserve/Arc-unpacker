@@ -7,5 +7,5 @@ package dk.statsbiblioteket.scape.arcunpacker;
  * Time: 12:12 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ExcludedResourceContingency {
+public class ExcludedResourceContingency extends Exception {
 }

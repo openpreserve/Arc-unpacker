@@ -9,7 +9,7 @@
         <dependencySet>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>org.archive.heritrix:heritrix-commons</include>
+                <include>org.webArchiveFile.heritrix:heritrix-commons</include>
                 <include>dk.statsbiblioteket.scape:arc-unpacker</include>
             </includes>
 
