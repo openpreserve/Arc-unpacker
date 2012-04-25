@@ -176,7 +176,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>dk.statsbiblioteket.scape.arcunpacker.Archive</mainClass>
+                            <mainClass>dk.statsbiblioteket.scape.arcunpacker.CLI</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>${maven.deb.libfolder}</classpathPrefix>
