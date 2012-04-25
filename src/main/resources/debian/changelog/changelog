@@ -1,3 +1,8 @@
+${maven.deb.name} (0.4.1) unstable; urgency=low
+  * Renamed the changelog to fix the lintian error
+
+ -- Asger Askov Blekinge <abr@statsbiblioteket.dk>  Tue, 24 Apr 2012 14:16:00 +0100
+
 ${maven.deb.name} (0.4.0) unstable; urgency=low
   * Cleaned up.
   * Fixed misspellings
