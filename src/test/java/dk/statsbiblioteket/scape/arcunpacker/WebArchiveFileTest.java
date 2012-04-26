@@ -19,7 +19,8 @@ public class WebArchiveFileTest {
 
     @org.junit.Test
     public void testMain() throws Exception {
-        WebArchiveFile webArchiveFile = new WebArchiveFile(new File("src/test/resources/IAH-20080430204825-00000-blackbook.arc.gz"));
+        File file = new File("src/test/resources/IAH-20080430204825-00000-blackbook.arc.gz");
+        WebArchiveFile webArchiveFile = new WebArchiveFile(file.getName(),file);
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
@@ -30,7 +31,8 @@ public class WebArchiveFileTest {
 
     @org.junit.Test
     public void testMain2() throws Exception {
-        WebArchiveFile webArchiveFile = new WebArchiveFile(new File("src/test/resources/IAH-20080430204825-00000-blackbook.warc.gz"));
+        File file = new File("src/test/resources/IAH-20080430204825-00000-blackbook.warc.gz");
+        WebArchiveFile webArchiveFile = new WebArchiveFile(file.getName(),file);
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
