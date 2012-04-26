@@ -19,10 +19,41 @@ public class WebArchiveFile {
     private static final Log log = LogFactory.getLog(WebArchiveFile.class );
 
 
-    private File archiveFile;
 
-    public WebArchiveFile(File archiveFile) {
-        this.archiveFile = archiveFile;
+    private String archiveID;
+    private InputStream contents;
+
+    public WebArchiveFile(String archiveID, InputStream contents) {
+        this.archiveID = archiveID;
+        this.contents = contents;
+    }
+
+    public WebArchiveFile(String archiveID,File contents) throws FileNotFoundException {
+
+        this.archiveID = archiveID;
+        this.contents = new FileInputStream(contents);
+    }
+
+    public void list(File outdir,UnpackConfig unpackConfig) throws IOException, ParseException {
+
+        int filesExtracted = 0;
+        int blocks = 0;
+
+        ArchiveReader archivereader = ArchiveReaderFactory.get(archiveID,contents,true);
+        for (ArchiveRecord record : archivereader) {
+
+            ArchivedResource archivedResource = convertRecordToResource(record);
+            if (archivedResource != null) {
+                try {
+                    unpackResource(archivedResource,outdir, unpackConfig);
+                    filesExtracted++;
+                    blocks += archivedResource.getBlocks();
+                } catch (ExcludedResourceContingency excludedResourceContingency) {
+                    //Excluded resources are expected
+                }
+            }
+        }
+        log.info( "WebArchiveFile archiveFile " + archiveID + " structure evaluated: " + filesExtracted + " URIs, " + blocks + " blocks." );
     }
 
     public void unpack(File outdir,UnpackConfig unpackConfig) throws IOException, ParseException {
@@ -32,24 +63,21 @@ public class WebArchiveFile {
         int filesExtracted = 0;
         int blocks = 0;
 
-        ArchiveReader archivereader = ArchiveReaderFactory.get(archiveFile);
+        ArchiveReader archivereader = ArchiveReaderFactory.get(archiveID,contents,true);
         for (ArchiveRecord record : archivereader) {
 
             ArchivedResource archivedResource = convertRecordToResource(record);
             if (archivedResource != null) {
-
-                if (!archivedResource.isDirectory()) {
-                    try {
-                        unpackResource(archivedResource,outdir, unpackConfig);
-                        filesExtracted++;
-                        blocks += archivedResource.getBlocks();
-                    } catch (ExcludedResourceContingency excludedResourceContingency) {
-                        //Excluded resources are expected
-                    }
+                try {
+                    unpackResource(archivedResource,outdir, unpackConfig);
+                    filesExtracted++;
+                    blocks += archivedResource.getBlocks();
+                } catch (ExcludedResourceContingency excludedResourceContingency) {
+                    //Excluded resources are expected
                 }
             }
         }
-        log.info( "WebArchiveFile archiveFile " + archiveFile + " structure evaluated: " + filesExtracted + " URIs, " + blocks + " blocks." );
+        log.info( "WebArchiveFile archiveFile " + archiveID + " structure evaluated: " + filesExtracted + " URIs, " + blocks + " blocks." );
     }
 
     private void unpackResource(ArchivedResource archivedResource, File outdir, UnpackConfig config)
@@ -93,9 +121,9 @@ public class WebArchiveFile {
 
     private ArchivedResource convertRecordToResource(ArchiveRecord record) throws ParseException {
         if( record instanceof ARCRecord ) {
-            return new ArcArchivedResource(( ARCRecord )record,archiveFile);
+            return new ArcArchivedResource(( ARCRecord )record,archiveID);
         } else {
-            return new WarcArchivedResourse(( WARCRecord )record,archiveFile);
+            return new WarcArchivedResourse(( WARCRecord )record,archiveID);
         }
     }
 

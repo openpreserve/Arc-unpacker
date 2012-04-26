@@ -14,7 +14,6 @@ import java.text.ParseException;
 import java.util.Date;
 
 import static org.archive.io.warc.WARCConstants.DEFAULT_ENCODING;
-import static org.archive.io.warc.WARCConstants.HEADER_KEY_TYPE;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,14 +27,14 @@ public abstract class ArchivedResource {
     private ArchiveRecordHeader header;
     private boolean directory = false;
 
-    private File archiveFile;
+    private String archiveID;
     private ArchiveRecord record;
 
 
-    public ArchivedResource(ArchiveRecord record, File archiveFile) {
+    public ArchivedResource(ArchiveRecord record, String archiveID) {
 
         this.record = record;
-        this.archiveFile = archiveFile;
+        this.archiveID = archiveID;
 
         header = record.getHeader();
 
@@ -51,13 +50,6 @@ public abstract class ArchivedResource {
         return header.getLength()-header.getContentBegin();
     }
     public abstract String getResourceURL();
-
-    public boolean isDirectory() {
-        return directory;
-    }
-    public void setDirectory(boolean directory) {
-        this.directory = directory;
-    }
 
     public long getBlocks(){
         return (header.getLength() + blockSize - 1) / blockSize;
@@ -81,7 +73,7 @@ public abstract class ArchivedResource {
                 path = DigestUtils.md5Hex(path)+":"+ getServerReturnedMimeType();
                 break;
             case OFFSET:
-                path = archiveFile.getName()+":"+ getOffsetInArchiveFile()+":"+ getServerReturnedMimeType().split(";")[0];
+                path = archiveID+":"+ getOffsetInArchiveFile()+":"+ getServerReturnedMimeType().split(";")[0];
                 break;
         }
         path = path.replace("/", "-");

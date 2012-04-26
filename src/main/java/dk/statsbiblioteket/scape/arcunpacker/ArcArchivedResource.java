@@ -15,8 +15,8 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class ArcArchivedResource extends ArchivedResource{
-    public ArcArchivedResource(ARCRecord record, File archiveFile) {
-        super(record, archiveFile);
+    public ArcArchivedResource(ARCRecord record, String archiveID) {
+        super(record, archiveID);
     }
 
     @Override

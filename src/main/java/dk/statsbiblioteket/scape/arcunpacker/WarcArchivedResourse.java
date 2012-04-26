@@ -19,8 +19,8 @@ import static org.archive.io.warc.WARCConstants.HEADER_KEY_URI;
  * To change this template use File | Settings | File Templates.
  */
 public class WarcArchivedResourse extends ArchivedResource{
-    public WarcArchivedResourse(WARCRecord record, File archiveFile) {
-        super(record, archiveFile);
+    public WarcArchivedResourse(WARCRecord record, String archiveID) {
+        super(record, archiveID);
     }
 
     @Override

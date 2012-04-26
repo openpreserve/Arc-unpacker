@@ -76,7 +76,7 @@ public class CLI {
                 UnpackConfig.Naming.valueOf(cmd.getOptionValue(NAME_OPTION.getOpt(), UnpackConfig.Naming.MD5.name()));
 
         try {
-            WebArchiveFile webArchiveFile = new WebArchiveFile(warcFile);
+            WebArchiveFile webArchiveFile = new WebArchiveFile(warcFile.getName(),warcFile);
             UnpackConfig unpackConfig = new UnpackConfig(minResponse,maxResponse,naming);
             webArchiveFile.unpack(outdir,unpackConfig);
         } catch( Exception e ) {
