@@ -6,7 +6,10 @@ import org.apache.hadoop.mapred.*;
 
 import org.junit.Test;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,14 +32,13 @@ public class WarcInputFormatTest {
         boolean more = true;
         while (more){
             more = recordReader.next(key,value);
-/*
+
             System.out.println(recordReader.getProgress());
             System.out.println(key);
             System.out.println(value.getMimeType());
             System.out.println(value.getHttpReturnCode());
             System.out.println(value.getLength());
             System.out.println();
-*/
         }
 
     }
@@ -54,6 +56,7 @@ public class WarcInputFormatTest {
         boolean more = true;
         while (more){
             more = recordReader.next(key,value);
+
 /*
             System.out.println(recordReader.getProgress());
             System.out.println(key);
@@ -62,7 +65,25 @@ public class WarcInputFormatTest {
             System.out.println(value.getLength());
             System.out.println();
 */
+            printValue(value);
         }
+
+    }
+
+    public void printValue(WarcRecord value) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(value.getContents()));
+        while (true){
+            String line = reader.readLine();
+            if (line == null){
+                break;
+            } else {
+                System.out.println(line);
+            }
+
+        }
+        System.out.println();
+        System.out.println("---------------------------------------");
+        System.out.println();
 
     }
 }

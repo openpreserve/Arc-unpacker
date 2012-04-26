@@ -49,12 +49,21 @@ public class WarcRecord  implements Writable{
     public void setContents(InputStream input, int length) throws IOException {
         this.length = length;
         ensureSpace();
-        length = input.read(contents,0,length);
+        int offset = 0;
+        while (true){
+            int read = input.read(contents, offset, length);
+            if (read > 0){
+                offset +=read;
+            } else {
+                break;
+            }
+        }
+
     }
 
     private synchronized void ensureSpace() {
         if (length > contents.length){
-            //System.out.println("Upgrading array from "+contents.length+" to "+(2*length));
+            System.out.println("Upgrading array from "+contents.length+" to "+(2*length));
             contents = new byte[2*length];
         }
     }

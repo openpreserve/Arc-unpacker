@@ -14,6 +14,8 @@ import org.archive.io.ArchiveReader;
 import org.archive.io.ArchiveReaderFactory;
 import org.archive.io.ArchiveRecord;
 import org.archive.io.arc.ARCRecord;
+import org.archive.io.warc.WARCReader;
+import org.archive.io.warc.WARCRecord;
 
 import java.io.*;
 import java.text.ParseException;
@@ -62,8 +64,12 @@ public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
         ArchiveRecord nativeRecord = recordIterator.next();
         long recordLength = nativeRecord.getHeader().getLength();
         long contentBegin = nativeRecord.getHeader().getContentBegin();
+        if (contentBegin < 0){
+            contentBegin = 0;
+        }
         long positionInFile = nativeRecord.getHeader().getOffset();
-        long contentSize = recordLength - contentBegin;
+        long contentSize = recordLength-contentBegin;
+        nativeRecord.skip(contentBegin);
         value.setContents(nativeRecord, (int) contentSize);
         key.set(getResourceUrl(nativeRecord));
         value.setUrl(getResourceUrl(nativeRecord));
@@ -77,6 +83,7 @@ public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
     private int getHttpReturnCode(ArchiveRecord nativeRecord) throws IOException {
         if (nativeRecord instanceof ARCRecord){
             return ((ARCRecord) nativeRecord).getStatusCode();
+
         }
 
         String url = getResourceUrl(nativeRecord);
