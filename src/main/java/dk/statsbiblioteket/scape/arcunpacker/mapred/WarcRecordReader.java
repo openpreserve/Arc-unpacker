@@ -13,6 +13,7 @@ import org.apache.hadoop.mapred.RecordReader;
 import org.archive.io.ArchiveReader;
 import org.archive.io.ArchiveReaderFactory;
 import org.archive.io.ArchiveRecord;
+import org.archive.io.ArchiveRecordHeader;
 import org.archive.io.arc.ARCRecord;
 import org.archive.io.warc.WARCReader;
 import org.archive.io.warc.WARCRecord;
@@ -69,53 +70,73 @@ public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
         }
         long positionInFile = nativeRecord.getHeader().getOffset();
         long contentSize = recordLength-contentBegin;
-        nativeRecord.skip(contentBegin);
-        value.setContents(nativeRecord, (int) contentSize);
-        key.set(getResourceUrl(nativeRecord));
+        key.set(getID(nativeRecord));
         value.setUrl(getResourceUrl(nativeRecord));
         value.setMimeType(nativeRecord.getHeader().getMimetype());
         value.setDate(getResourceDate(nativeRecord));
-        value.setHttpReturnCode(getHttpReturnCode(nativeRecord));
+
+        Header[] headers = getHttpHeaders(nativeRecord);
+        value.setHttpReturnCode(getHttpReturnCode(headers));
+        nativeRecord.skip(contentBegin);
+        value.setContents(nativeRecord, (int) contentSize);
         position = positionInFile;
         return true;
     }
 
-    private int getHttpReturnCode(ArchiveRecord nativeRecord) throws IOException {
-        if (nativeRecord instanceof ARCRecord){
-            return ((ARCRecord) nativeRecord).getStatusCode();
-
+    private String getID(ArchiveRecord nativeRecord){
+        if (nativeRecord instanceof ARCRecord) {
+            ARCRecord arcRecord = (ARCRecord) nativeRecord;
+            ArchiveRecordHeader header = nativeRecord.getHeader();
+            return header.getRecordIdentifier();
+        } else if (nativeRecord instanceof WARCRecord) {
+            WARCRecord warcRecord = (WARCRecord) nativeRecord;
+            return warcRecord.getHeader().getHeaderValue(HEADER_KEY_ID).toString();
         }
+        return getResourceUrl(nativeRecord);
 
-        String url = getResourceUrl(nativeRecord);
-        if( url.matches( "^http.*$" ) ) {
-            Header[] headers = HttpParser.parseHeaders(nativeRecord, DEFAULT_ENCODING);
-            //first line is of the format   HttpClient-Bad-Header-Line-Failed-Parse : HTTP/1.0 200 OK
-            if (headers != null && headers.length >=1){
-                Header firstHeader = headers[0];
-                if (firstHeader.getName().equals("HttpClient-Bad-Header-Line-Failed-Parse")){
-                    if (firstHeader.getValue().startsWith("HTTP/1.")){
-                        //We have a http response header
-                        String[] elements = firstHeader.getValue().split(" ");
-                        if (elements.length == 3){
-                            String codeString = elements[1];
-                            int returnCode = Integer.parseInt(codeString);
-                            return returnCode;
-                        }
+    }
+
+    private Header[]  getHttpHeaders(ArchiveRecord nativeRecord) throws IOException {
+        if (nativeRecord instanceof ARCRecord){
+            return ((ARCRecord) nativeRecord).getHttpHeaders();
+        } else if (nativeRecord instanceof WARCRecord) {
+            WARCRecord warcRecord = (WARCRecord) nativeRecord;
+            if (warcRecord.hasContentHeaders()){
+                Header[] headers = HttpParser.parseHeaders(nativeRecord, DEFAULT_ENCODING);
+                return headers;
+            }
+        }
+        return new Header[0];
+    }
+
+    private int getHttpReturnCode(Header[] headers) throws IOException {
+
+        //first line is of the format   HttpClient-Bad-Header-Line-Failed-Parse : HTTP/1.0 200 OK
+        if (headers != null && headers.length >=1){
+            Header firstHeader = headers[0];
+            if (firstHeader.getName().equals("HttpClient-Bad-Header-Line-Failed-Parse")){
+                if (firstHeader.getValue().startsWith("HTTP/1.")){
+                    //We have a http response header
+                    String[] elements = firstHeader.getValue().split(" ");
+                    if (elements.length == 3){
+                        String codeString = elements[1];
+                        int returnCode = Integer.parseInt(codeString);
+                        return returnCode;
                     }
                 }
             }
-
         }
         return -1;
+
     }
 
     private Date getResourceDate(ArchiveRecord nativeRecord) throws IOException {
         try {
-        if( nativeRecord instanceof ARCRecord) {
-            return arcDateFormat.parse( nativeRecord.getHeader().getDate());
-        } else {
-            return  warcDateformat.parse( nativeRecord.getHeader().getHeaderValue( HEADER_KEY_DATE ).toString() );
-        }
+            if( nativeRecord instanceof ARCRecord) {
+                return arcDateFormat.parse( nativeRecord.getHeader().getDate());
+            } else {
+                return  warcDateformat.parse( nativeRecord.getHeader().getHeaderValue( HEADER_KEY_DATE ).toString() );
+            }
         } catch (ParseException e){
             throw new IOException("Failed to parse the date",e);
         }
@@ -126,12 +147,11 @@ public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
             return nativeRecord.getHeader().getUrl();
         } else {
             Object url = nativeRecord.getHeader().getHeaderValue(HEADER_KEY_URI);
-            if (url == null ){
-                return nativeRecord.getHeader().getHeaderValue(HEADER_KEY_ID).toString();
-            } else {
+            if (url != null ){
                 return url.toString();
             }
         }
+        return null;
     }
 
     @Override

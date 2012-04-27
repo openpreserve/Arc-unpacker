@@ -51,10 +51,11 @@ public class WarcRecord  implements Writable{
         ensureSpace();
         int offset = 0;
         while (true){
-            int read = input.read(contents, offset, length);
+            int read = input.read(contents, offset, length-offset);
             if (read > 0){
                 offset +=read;
             } else {
+                this.length = offset;
                 break;
             }
         }
@@ -63,7 +64,7 @@ public class WarcRecord  implements Writable{
 
     private synchronized void ensureSpace() {
         if (length > contents.length){
-            System.out.println("Upgrading array from "+contents.length+" to "+(2*length));
+            //System.out.println("Upgrading array from "+contents.length+" to "+(2*length));
             contents = new byte[2*length];
         }
     }

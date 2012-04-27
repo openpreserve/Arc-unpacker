@@ -31,14 +31,15 @@ public class WarcInputFormatTest {
         WarcRecord value = recordReader.createValue();
         boolean more = true;
         while (more){
+            System.out.println(key);
+           // printValue(value);
             more = recordReader.next(key,value);
 
-            System.out.println(recordReader.getProgress());
-            System.out.println(key);
-            System.out.println(value.getMimeType());
-            System.out.println(value.getHttpReturnCode());
-            System.out.println(value.getLength());
-            System.out.println();
+//            System.out.println(recordReader.getProgress());
+
+//            System.out.println(value.getHttpReturnCode());
+//            System.out.println(value.getLength());
+  //          System.out.println();
         }
 
     }
@@ -55,17 +56,19 @@ public class WarcInputFormatTest {
         WarcRecord value = recordReader.createValue();
         boolean more = true;
         while (more){
+
+            System.out.println(key);
             more = recordReader.next(key,value);
 
 /*
             System.out.println(recordReader.getProgress());
-            System.out.println(key);
+
             System.out.println(value.getMimeType());
             System.out.println(value.getHttpReturnCode());
             System.out.println(value.getLength());
             System.out.println();
 */
-            printValue(value);
+            //printValue(value);
         }
 
     }
