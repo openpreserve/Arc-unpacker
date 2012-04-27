@@ -74,13 +74,22 @@ public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
         value.setUrl(getResourceUrl(nativeRecord));
         value.setMimeType(nativeRecord.getHeader().getMimetype());
         value.setDate(getResourceDate(nativeRecord));
-
+        value.setType(getType(nativeRecord));
         Header[] headers = getHttpHeaders(nativeRecord);
-        value.setHttpReturnCode(getHttpReturnCode(headers));
+        value.setHttpReturnCode(getHttpReturnCode(nativeRecord,headers));
         nativeRecord.skip(contentBegin);
         value.setContents(nativeRecord, (int) contentSize);
         position = positionInFile;
         return true;
+    }
+
+    private String getType(ArchiveRecord nativeRecord) {
+        if (nativeRecord instanceof WARCRecord) {
+            WARCRecord warcRecord = (WARCRecord) nativeRecord;
+            return warcRecord.getHeader().getHeaderValue(HEADER_KEY_TYPE).toString();
+        } else {
+            return "response";
+        }
     }
 
     private String getID(ArchiveRecord nativeRecord){
@@ -109,7 +118,11 @@ public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
         return new Header[0];
     }
 
-    private int getHttpReturnCode(Header[] headers) throws IOException {
+    private int getHttpReturnCode(ArchiveRecord nativeRecord, Header[] headers) throws IOException {
+        if (nativeRecord instanceof ARCRecord) {
+            ARCRecord arcRecord = (ARCRecord) nativeRecord;
+            return arcRecord.getStatusCode();
+        }
 
         //first line is of the format   HttpClient-Bad-Header-Line-Failed-Parse : HTTP/1.0 200 OK
         if (headers != null && headers.length >=1){

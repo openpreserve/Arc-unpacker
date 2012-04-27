@@ -20,6 +20,7 @@ public class WarcRecord  implements Writable{
     private Date date = null;
     private int httpReturnCode = -1;
     private int length = 0;
+    private String type;
     private byte[] contents = new byte[0];
 
     public void clear(){
@@ -62,6 +63,10 @@ public class WarcRecord  implements Writable{
 
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     private synchronized void ensureSpace() {
         if (length > contents.length){
             //System.out.println("Upgrading array from "+contents.length+" to "+(2*length));
@@ -94,6 +99,9 @@ public class WarcRecord  implements Writable{
         return new ByteArrayInputStream(contents,0,length);
     }
 
+    public String getType() {
+        return type;
+    }
 
     @Override
     public void write(DataOutput out) throws IOException {
@@ -101,6 +109,7 @@ public class WarcRecord  implements Writable{
         out.writeUTF(mimeType);
         out.writeLong(date.getTime());
         out.writeInt(httpReturnCode);
+        out.writeUTF(type);
         out.write(length);
         out.write(contents,0,length);
     }
@@ -111,6 +120,7 @@ public class WarcRecord  implements Writable{
         mimeType = in.readUTF();
         date = new Date(in.readLong());
         httpReturnCode = in.readInt();
+        type = in.readUTF();
         length = in.readInt();
         ensureSpace();
         in.readFully(contents,0,length);
