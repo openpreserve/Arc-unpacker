@@ -1,9 +1,0 @@
-Package: ${maven.deb.name}
-Version: ${maven.deb.version}
-Section: java
-Priority: optional
-Architecture: all
-Depends: default-jre (>= 1.6)
-Maintainer: ${maven.deb.maintainer}
-Description: ${maven.deb.description}
- ${maven.deb.extendedDescription}

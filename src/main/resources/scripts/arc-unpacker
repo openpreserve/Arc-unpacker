@@ -1,2 +1,0 @@
-#!/bin/sh
-java -jar ${maven.deb.libfolder}/${project.build.finalName}.jar $*

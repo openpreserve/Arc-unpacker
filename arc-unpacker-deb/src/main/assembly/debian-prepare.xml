@@ -1,0 +1,20 @@
+<assembly>
+    <id>debian-prepare</id>
+
+    <formats>
+        <format>dir</format>
+    </formats>
+
+    <dependencySets>
+
+        <dependencySet>
+            <outputDirectory>jars</outputDirectory>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <useProjectArtifact>false</useProjectArtifact>
+        </dependencySet>
+
+    </dependencySets>
+
+</assembly>
+
