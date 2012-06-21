@@ -12,6 +12,22 @@
 
     <artifactId>arc-unpacker-deb</artifactId>
 
+    <properties>
+        <maven.deb.name>arc-unpacker</maven.deb.name>
+        <maven.deb.version>${project.version}</maven.deb.version>
+        <maven.deb.libfolder>/usr/share/${maven.deb.name}</maven.deb.libfolder>
+        <maven.deb.docfolder>/usr/share/doc/${maven.deb.name}</maven.deb.docfolder>
+        <maven.deb.manfolder>/usr/share/man</maven.deb.manfolder>
+        <maven.deb.binfolder>/usr/bin</maven.deb.binfolder>
+        <maven.deb.assembly>debian-prepare</maven.deb.assembly>
+        <maven.deb.description>unpacker application for arc and warc files, based on the heritrix crawler.</maven.deb.description>
+        <maven.deb.extendedDescription>This is the extended Description</maven.deb.extendedDescription>
+        <maven.deb.maintainer><![CDATA[Asger Askov Blekinge <abr@statsbiblioteket.dk>]]></maven.deb.maintainer>
+        <maven.deb.copyright>Copyright (C) 2012 by State and University Library, Denmark</maven.deb.copyright>
+        <maven.deb.license>Apache-2.0</maven.deb.license>
+
+
+    </properties>
     <dependencies>
         <dependency>
             <groupId>dk.statsbiblioteket.scape</groupId>

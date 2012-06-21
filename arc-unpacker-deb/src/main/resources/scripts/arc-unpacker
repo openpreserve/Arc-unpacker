@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar ${maven.deb.libfolder}/${project.build.finalName}.jar $*
+java -jar ${maven.deb.libfolder}/arc-unpacker-cli-*.jar $*
