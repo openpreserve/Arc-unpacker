@@ -22,6 +22,7 @@ public class WarcRecord  implements Writable{
     private int length = 0;
     private String type;
     private byte[] contents = new byte[0];
+    private String ID;
 
     public void clear(){
         mimeType = null;
@@ -127,4 +128,11 @@ public class WarcRecord  implements Writable{
     }
 
 
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getID() {
+        return ID;
+    }
 }

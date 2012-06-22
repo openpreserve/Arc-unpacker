@@ -3,6 +3,7 @@ package dk.statsbiblioteket.scape.arcunpacker;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.net.URL;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,6 +13,8 @@ import java.io.File;
  * To change this template use File | Settings | File Templates.
  */
 public class WebArchiveFileTest {
+    ;
+
     @org.junit.Test
     public void testUsage(){
         CLI.printUsage();
@@ -19,8 +22,9 @@ public class WebArchiveFileTest {
 
     @org.junit.Test
     public void testMain() throws Exception {
-        File file = new File("src/test/resources/IAH-20080430204825-00000-blackbook.arc.gz");
-        WebArchiveFile webArchiveFile = new WebArchiveFile(file.getName(),file);
+        URL file = WebArchiveFileTest.class.getResource("/IAH-20080430204825-00000-blackbook.arc.gz");
+
+        WebArchiveFile webArchiveFile = new WebArchiveFile(file.getFile(),file.openStream());
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
@@ -31,8 +35,9 @@ public class WebArchiveFileTest {
 
     @org.junit.Test
     public void testMain2() throws Exception {
-        File file = new File("src/test/resources/IAH-20080430204825-00000-blackbook.warc.gz");
-        WebArchiveFile webArchiveFile = new WebArchiveFile(file.getName(),file);
+        URL file = WebArchiveFileTest.class.getResource("/IAH-20080430204825-00000-blackbook.warc.gz");
+
+        WebArchiveFile webArchiveFile = new WebArchiveFile(file.getFile(),file.openStream());
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
