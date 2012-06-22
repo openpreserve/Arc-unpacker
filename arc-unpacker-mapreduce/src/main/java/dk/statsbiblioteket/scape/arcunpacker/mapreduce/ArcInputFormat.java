@@ -14,8 +14,9 @@
  *  limitations under the License.
  *  under the License.
  */
-package onb.fue.archd;
+package dk.statsbiblioteket.scape.arcunpacker.mapreduce;
 
+import dk.statsbiblioteket.scape.arcunpacker.HadoopArcRecord;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -31,10 +32,11 @@ import java.io.IOException;
  * @author shsdev https://github.com/shsdev
  * @version 0.2
  */
-public class ArcInputFormat extends FileInputFormat<Text, ArcRecord> {
+public class ArcInputFormat extends FileInputFormat<Text, HadoopArcRecord> {
 
     @Override
-    public RecordReader<Text, ArcRecord> createRecordReader(InputSplit is, TaskAttemptContext tac) throws IOException, InterruptedException {
+    public RecordReader<Text, HadoopArcRecord> createRecordReader(InputSplit is, TaskAttemptContext tac)
+            throws IOException {
         return new ArcRecordReader();
         
     }

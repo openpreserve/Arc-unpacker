@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.scape.arcunpacker.mapred;
+package dk.statsbiblioteket.scape.arcunpacker;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpParser;
@@ -31,42 +31,65 @@ public class HeritrixWrapper {
 
     private long position = 0;
     private long fileLength = 0;
-    private WarcRecord record;
 
     private static final SimpleDateFormat arcDateFormat = new SimpleDateFormat( "yyyyMMddHHmmss" );
     private static final SimpleDateFormat warcDateformat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
 
+
+    private ArchiveRecord nativeArchiveRecord;
+
+    private ArcRecord currentArcRecord;
+    private String currentID;
+
+
     public HeritrixWrapper(String fileName, InputStream fileInputStream,long fileLength) throws IOException {
+        this.fileLength = fileLength;
         ArchiveReader reader = ArchiveReaderFactory.get(fileName, fileInputStream, true);
         recordIterator = reader.iterator();
 
-
     }
-    public synchronized boolean next(WarcRecord value) throws IOException {
-        if (!recordIterator.hasNext()){
-            return false;
-        }
 
-        ArchiveRecord nativeRecord = recordIterator.next();
-        long recordLength = nativeRecord.getHeader().getLength();
-        long contentBegin = nativeRecord.getHeader().getContentBegin();
-        if (contentBegin < 0){
+    public synchronized boolean nextKeyValue() throws IOException {
+        if (recordIterator.hasNext()) {
+            nativeArchiveRecord = recordIterator.next();
+            currentID = getID(nativeArchiveRecord);
+            return true;
+        }
+        return false;
+    }
+
+    public String getCurrentID() {
+        return currentID;
+    }
+
+    public synchronized ArcRecord getCurrentArcRecord(ArcRecord value) throws IOException {
+        currentArcRecord = value;
+        loadCurrentArdRecord();
+        return currentArcRecord;
+    }
+
+    private void loadCurrentArdRecord() throws IOException {
+
+        currentArcRecord.clear();
+        long recordLength = nativeArchiveRecord.getHeader().getLength();
+        long contentBegin = nativeArchiveRecord.getHeader().getContentBegin();
+        if (contentBegin < 0) {
             contentBegin = 0;
         }
-        long positionInFile = nativeRecord.getHeader().getOffset();
-        long contentSize = recordLength-contentBegin;
-
-        value.setUrl(getResourceUrl(nativeRecord));
-        value.setID(getID(nativeRecord));
-        value.setMimeType(nativeRecord.getHeader().getMimetype());
-        value.setDate(getResourceDate(nativeRecord));
-        value.setType(getType(nativeRecord));
-        Header[] headers = getHttpHeaders(nativeRecord);
-        value.setHttpReturnCode(getHttpReturnCode(nativeRecord,headers));
-        nativeRecord.skip(contentBegin);
-        value.setContents(nativeRecord, (int) contentSize);
+        long positionInFile = nativeArchiveRecord.getHeader().getOffset();
+        long contentSize = recordLength - contentBegin;
+        currentArcRecord.setUrl(getResourceUrl(nativeArchiveRecord));
+        //currentArcRecord.setMimeType(nativeArchiveRecord.getHeader().getMimetype());
+        currentArcRecord.setDate(getResourceDate(nativeArchiveRecord));
+        currentArcRecord.setType(getType(nativeArchiveRecord));
+        Header[] headers = getHttpHeaders(nativeArchiveRecord);
+        currentArcRecord.setHttpReturnCode(getHttpReturnCode(nativeArchiveRecord, headers));
+        currentArcRecord.setMimeType(getMimeType(nativeArchiveRecord, headers)); // to support ARC and WARC
+        nativeArchiveRecord.skip(contentBegin);
+        currentArcRecord.setContents(nativeArchiveRecord, (int) contentSize);
         position = positionInFile;
-        return true;
+
+
     }
 
     private String getType(ArchiveRecord nativeRecord) {
@@ -151,6 +174,38 @@ public class HeritrixWrapper {
             }
         }
         return null;
+    }
+
+
+
+
+    private String getMimeType(ArchiveRecord nativeRecord, Header[] headers) {
+
+        // *** 4 cases are covered here
+        // 1) ARCRecord
+        // 2) WARCRecord with a HTTPHeader (WARC RESPONSE records)
+        // 3) WARCRecord - no HttpHeader (WARCINFO record [the WARC container header] and DNS records)
+        // 4) Neither a ARCRecord nor a WARCRecord (REQUEST and METADATA records of WARCs)
+        // *** 1, 3, 4 do return the record MIME TYPE (which is is the content MIME TYPE of ARC records and the record MIME TYPE of WARC REQUEST and METADATA records)
+        // *** 2 returns the MIME TYPE stored in the HTTPHeader of the RESPONSE (content) record.
+        //          Otherwise this record returns: "application/http; msgtype=response") - which is true too but not the information we want. We want to see the MIME TYPE of the content stream as the result.
+
+        // CASE 2:
+        if (nativeRecord instanceof WARCRecord) {
+            if (headers != null && headers.length >= 1) {
+                String currentHeaderName;
+                for (Header currentHeader : headers) {
+                    currentHeaderName = currentHeader.getName().toLowerCase();
+                    if (currentHeaderName.equals("content-type")) {
+                        return currentHeader.getValue();
+                    }
+                }
+            }
+        }
+
+        // CASE 1, 3, 4:
+        return nativeRecord.getHeader().getMimetype();
+
     }
 
 

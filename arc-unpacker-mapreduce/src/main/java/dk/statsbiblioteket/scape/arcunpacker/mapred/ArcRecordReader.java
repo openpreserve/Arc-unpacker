@@ -1,7 +1,8 @@
 package dk.statsbiblioteket.scape.arcunpacker.mapred;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpParser;
+import dk.statsbiblioteket.scape.arcunpacker.ArcRecord;
+import dk.statsbiblioteket.scape.arcunpacker.HadoopArcRecord;
+import dk.statsbiblioteket.scape.arcunpacker.HeritrixWrapper;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -10,21 +11,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
-import org.archive.io.ArchiveReader;
-import org.archive.io.ArchiveReaderFactory;
-import org.archive.io.ArchiveRecord;
-import org.archive.io.ArchiveRecordHeader;
-import org.archive.io.arc.ARCRecord;
-import org.archive.io.warc.WARCReader;
-import org.archive.io.warc.WARCRecord;
 
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-
-import static org.archive.io.warc.WARCConstants.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,13 +21,13 @@ import static org.archive.io.warc.WARCConstants.*;
  * Time: 10:09 AM
  * To change this template use File | Settings | File Templates.
  */
-public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
+public class ArcRecordReader implements RecordReader<Text,HadoopArcRecord>{
 
 
     private HeritrixWrapper archiveReaderDelegate;
-    private WarcRecord record;
+    private HadoopArcRecord record;
 
-    public WarcRecordReader(JobConf jobConf, FileSplit fileSplit) throws IOException {
+    public ArcRecordReader(JobConf jobConf, FileSplit fileSplit) throws IOException {
         Path path = fileSplit.getPath();
         FileSystem fileSystem = path.getFileSystem(jobConf);
         FSDataInputStream fileInputStream = fileSystem.open(path);
@@ -51,12 +39,14 @@ public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
 
 
     @Override
-    public synchronized boolean next(Text key, WarcRecord value) throws IOException {
-        value.clear();
-        boolean more = archiveReaderDelegate.next(value);
-        key.set(value.getID());
+    public boolean next(Text key, HadoopArcRecord value) throws IOException {
+
+        boolean more = archiveReaderDelegate.nextKeyValue();
+        key.set(archiveReaderDelegate.getCurrentID());
+        archiveReaderDelegate.getCurrentArcRecord(value);
         return more;
     }
+
 
 
     @Override
@@ -65,9 +55,9 @@ public class WarcRecordReader implements RecordReader<Text,WarcRecord>{
     }
 
     @Override
-    public WarcRecord createValue() {
+    public HadoopArcRecord createValue() {
         if (record == null){
-            record = new WarcRecord();
+            record = new HadoopArcRecord();
         } else {
             record.clear();
         }

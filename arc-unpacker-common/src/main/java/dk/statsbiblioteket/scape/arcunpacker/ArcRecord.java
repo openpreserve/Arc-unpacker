@@ -1,34 +1,18 @@
-/*
- *  Copyright 2012 The SCAPE Project Consortium.
- * 
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- * 
- *       http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  under the License.
- */
+package dk.statsbiblioteket.scape.arcunpacker;
 
-package onb.fue.archd;
-
-import org.apache.hadoop.io.Writable;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.Date;
 
 /**
- *
- * @author shsdev https://github.com/shsdev
- * @version 0.2
+ * Created by IntelliJ IDEA.
+ * User: abr
+ * Date: 4/26/12
+ * Time: 10:52 AM
+ * To change this template use File | Settings | File Templates.
  */
-public class ArcRecord implements Writable {
-    
+public class ArcRecord {
     private String url = null;
     private String mimeType = null;
     private Date date = null;
@@ -36,6 +20,7 @@ public class ArcRecord implements Writable {
     private int length = 0;
     private String type;
     private byte[] contents = new byte[0];
+    private String ID;
 
     public void clear(){
         mimeType = null;
@@ -66,7 +51,7 @@ public class ArcRecord implements Writable {
         ensureSpace();
         int offset = 0;
         while (true){
-            int read = input.read(contents, offset, length - offset);
+            int read = input.read(contents, offset, length-offset);
             if (read > 0){
                 offset +=read;
             } else {
@@ -81,7 +66,7 @@ public class ArcRecord implements Writable {
         this.type = type;
     }
 
-    private synchronized void ensureSpace() {
+    protected synchronized void ensureSpace() {
         if (length > contents.length){
             //System.out.println("Upgrading array from "+contents.length+" to "+(2*length));
             contents = new byte[2*length];
@@ -117,27 +102,19 @@ public class ArcRecord implements Writable {
         return type;
     }
 
-    @Override
-    public void write(DataOutput out) throws IOException {
-        out.writeUTF(url);
-        out.writeUTF(mimeType);
-        out.writeLong(date.getTime());
-        out.writeInt(httpReturnCode);
-        out.writeUTF(type);
-        out.write(length);
-        out.write(contents,0,length);
+    protected byte[] getBytes(){
+        return contents;
     }
 
-    @Override
-    public void readFields(DataInput in) throws IOException {
-        url = in.readUTF();
-        mimeType = in.readUTF();
-        date = new Date(in.readLong());
-        httpReturnCode = in.readInt();
-        type = in.readUTF();
-        length = in.readInt();
-        ensureSpace();
-        in.readFully(contents,0,length);
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
+    public String getID() {
+        return ID;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
 }

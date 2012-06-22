@@ -24,7 +24,7 @@ public class WebArchiveFileTest {
     public void testMain() throws Exception {
         URL file = WebArchiveFileTest.class.getResource("/IAH-20080430204825-00000-blackbook.arc.gz");
 
-        WebArchiveFile webArchiveFile = new WebArchiveFile(file.getFile(),file.openStream());
+        WebArchiveFile webArchiveFile = new WebArchiveFile(new File(file.toURI()).getName(),file.openStream());
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);
@@ -37,7 +37,7 @@ public class WebArchiveFileTest {
     public void testMain2() throws Exception {
         URL file = WebArchiveFileTest.class.getResource("/IAH-20080430204825-00000-blackbook.warc.gz");
 
-        WebArchiveFile webArchiveFile = new WebArchiveFile(file.getFile(),file.openStream());
+        WebArchiveFile webArchiveFile = new WebArchiveFile(new File(file.toURI()).getName(),file.openStream());
         File unpack = new File("build/testunpack");
 
         FileUtils.deleteDirectory(unpack);

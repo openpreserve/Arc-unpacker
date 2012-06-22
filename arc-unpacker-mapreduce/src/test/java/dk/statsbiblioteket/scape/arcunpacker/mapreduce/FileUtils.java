@@ -14,7 +14,7 @@
  *limitations under the License.
  *under the License.
  */
-package onb.fue.archd.util;
+package dk.statsbiblioteket.scape.arcunpacker.mapreduce;
 
 import java.io.*;
 

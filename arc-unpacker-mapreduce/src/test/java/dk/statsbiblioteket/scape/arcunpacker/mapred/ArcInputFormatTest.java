@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.scape.arcunpacker.mapred;
 
+import dk.statsbiblioteket.scape.arcunpacker.ArcRecord;
+import dk.statsbiblioteket.scape.arcunpacker.HadoopArcRecord;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
@@ -18,17 +20,17 @@ import java.io.InputStreamReader;
  * Time: 12:23 PM
  * To change this template use File | Settings | File Templates.
  */
-public class WarcInputFormatTest {
+public class ArcInputFormatTest {
     @Test
     public void testGetRecordReaderOnArc() throws Exception {
-        WarcInputFormat inputFormat = new WarcInputFormat();
+        ArcInputFormat inputFormat = new ArcInputFormat();
         JobConf jobConf = new JobConf();
         File file = new File("src/test/resources/IAH-20080430204825-00000-blackbook.arc.gz");
         InputSplit split = new FileSplit(new Path(file.getAbsolutePath()),0,file.length(),jobConf);
         Reporter reporter = Reporter.NULL;
-        RecordReader<Text, WarcRecord> recordReader = inputFormat.getRecordReader(split, jobConf, reporter);
+        RecordReader<Text, HadoopArcRecord> recordReader = inputFormat.getRecordReader(split, jobConf, reporter);
         Text key = recordReader.createKey();
-        WarcRecord value = recordReader.createValue();
+        HadoopArcRecord value = recordReader.createValue();
         boolean more = true;
         while (more){
             System.out.println(key);
@@ -46,14 +48,14 @@ public class WarcInputFormatTest {
 
      @Test
     public void testGetRecordReaderOnWArc() throws Exception {
-        WarcInputFormat inputFormat = new WarcInputFormat();
+        ArcInputFormat inputFormat = new ArcInputFormat();
         JobConf jobConf = new JobConf();
         File file = new File("src/test/resources/IAH-20080430204825-00000-blackbook.warc.gz");
         InputSplit split = new FileSplit(new Path(file.getAbsolutePath()),0,file.length(),jobConf);
         Reporter reporter = Reporter.NULL;
-        RecordReader<Text, WarcRecord> recordReader = inputFormat.getRecordReader(split, jobConf, reporter);
+        RecordReader<Text, HadoopArcRecord> recordReader = inputFormat.getRecordReader(split, jobConf, reporter);
         Text key = recordReader.createKey();
-        WarcRecord value = recordReader.createValue();
+        HadoopArcRecord value = recordReader.createValue();
         boolean more = true;
         while (more){
 
@@ -74,7 +76,7 @@ public class WarcInputFormatTest {
 
     }
 
-    public void printValue(WarcRecord value) throws IOException {
+    public void printValue(ArcRecord value) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(value.getContents()));
         while (true){
             String line = reader.readLine();

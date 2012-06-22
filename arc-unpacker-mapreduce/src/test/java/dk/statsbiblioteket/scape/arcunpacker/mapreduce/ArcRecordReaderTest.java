@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package onb.fue.archd;
+package dk.statsbiblioteket.scape.arcunpacker.mapreduce;
 
+import dk.statsbiblioteket.scape.arcunpacker.HadoopArcRecord;
 import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -37,8 +38,8 @@ public class ArcRecordReaderTest extends TestCase {
 
         super.setUp();
 
-        InputStream is = ArcRecordReaderTest.class.getResourceAsStream("ONBdevSample.arc.gz");
-        File file = onb.fue.archd.util.FileUtils.getTmpFile("archd", "arc.gz");
+        InputStream is = ArcRecordReaderTest.class.getResourceAsStream("/ONBdevSample.arc.gz");
+        File file = FileUtils.getTmpFile("archd", "arc.gz");
         OutputStream out = new FileOutputStream(file);
         int read = 0;
         byte[] bytes = new byte[1024];
@@ -71,12 +72,12 @@ public class ArcRecordReaderTest extends TestCase {
      * Test of nextKeyValue method, of class ArcRecordReader.
      */
     public void testNextKeyValue() throws Exception {
-        RecordReader<Text, ArcRecord> recordReader = myArcF.createRecordReader(split, tac);
+        RecordReader<Text, HadoopArcRecord> recordReader = myArcF.createRecordReader(split, tac);
         recordReader.initialize(split, tac);
         int start = 1;
         while (recordReader.nextKeyValue()) {
             Text currKey = recordReader.getCurrentKey();
-            ArcRecord currValue = recordReader.getCurrentValue();
+            HadoopArcRecord currValue = recordReader.getCurrentValue();
 
             String currMIMEType = currValue.getMimeType();
             String currType = currValue.getType();
