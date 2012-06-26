@@ -30,6 +30,7 @@ public class HeritrixWrapper {
     private Iterator<ArchiveRecord> recordIterator;
 
     private long position = 0;
+    private String fileName;
     private long fileLength = 0;
 
     private static final SimpleDateFormat arcDateFormat = new SimpleDateFormat( "yyyyMMddHHmmss" );
@@ -43,8 +44,10 @@ public class HeritrixWrapper {
 
 
     public HeritrixWrapper(String fileName, InputStream fileInputStream,long fileLength) throws IOException {
+        this.fileName = fileName;
         this.fileLength = fileLength;
         ArchiveReader reader = ArchiveReaderFactory.get(fileName, fileInputStream, true);
+
         recordIterator = reader.iterator();
 
     }
@@ -85,6 +88,8 @@ public class HeritrixWrapper {
         Header[] headers = getHttpHeaders(nativeArchiveRecord);
         currentArcRecord.setHttpReturnCode(getHttpReturnCode(nativeArchiveRecord, headers));
         currentArcRecord.setMimeType(getMimeType(nativeArchiveRecord, headers)); // to support ARC and WARC
+        currentArcRecord.setOffsetInArc(positionInFile);
+        currentArcRecord.setArcFile(fileName);
         nativeArchiveRecord.skip(contentBegin);
         currentArcRecord.setContents(nativeArchiveRecord, (int) contentSize);
         position = positionInFile;

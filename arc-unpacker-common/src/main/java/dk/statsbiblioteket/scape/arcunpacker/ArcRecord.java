@@ -21,12 +21,16 @@ public class ArcRecord {
     private String type;
     private byte[] contents = new byte[0];
     private String ID;
+    private String arcFile;
+    private long offsetInArc;
 
     public void clear(){
         mimeType = null;
         date = null;
         httpReturnCode = -1;
         length = 0;
+        arcFile = "";
+        offsetInArc = 0;
         //We do not clear contents, to prevent memory thrashing
     }
 
@@ -116,5 +120,21 @@ public class ArcRecord {
 
     public void setLength(int length) {
         this.length = length;
+    }
+
+    public String getArcFile() {
+        return arcFile;
+    }
+
+    public void setArcFile(String arcFile) {
+        this.arcFile = arcFile;
+    }
+
+    public long getOffsetInArc() {
+        return offsetInArc;
+    }
+
+    public void setOffsetInArc(long offsetInArc) {
+        this.offsetInArc = offsetInArc;
     }
 }
