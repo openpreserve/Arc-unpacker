@@ -1,0 +1,9 @@
+*.ipr
+*.iml
+*.iws
+**/*.ipr
+**/*.iml
+**/*.iws
+**/target/*
+**/*~
+*~
