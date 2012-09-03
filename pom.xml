@@ -5,7 +5,7 @@
 
     <groupId>dk.statsbiblioteket.scape</groupId>
     <artifactId>arc-unpacker-parent</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>arc-unpacker-cli</module>
