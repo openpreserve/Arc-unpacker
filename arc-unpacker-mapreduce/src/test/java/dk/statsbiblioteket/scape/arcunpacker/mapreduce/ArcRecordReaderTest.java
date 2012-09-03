@@ -15,28 +15,30 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+import org.junit.Before;
+import org.junit.Test;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  * @author onbram
  */
-public class ArcRecordReaderTest extends TestCase {
+
+public class ArcRecordReaderTest {
 
     private ArcInputFormat myArcF;
     private FileSplit split;
     private TaskAttemptContext tac;
 
-    public ArcRecordReaderTest(String testName) {
-        super(testName);
-    }
 
-    @Override
-    protected void setUp() throws Exception {
-
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
 
         InputStream is = ArcRecordReaderTest.class.getResourceAsStream("/ONBdevSample.arc.gz");
         File file = FileUtils.getTmpFile("archd", "arc.gz");
@@ -60,17 +62,15 @@ public class ArcRecordReaderTest extends TestCase {
         split = new FileSplit(new Path(file.getAbsolutePath()), 0, file.length(), null);
 
         myArcF = new ArcInputFormat();
-        tac = new TaskAttemptContext(conf, new TaskAttemptID());
+        tac = new TaskAttemptContextImpl(conf, new TaskAttemptID());
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+
 
     /**
      * Test of nextKeyValue method, of class ArcRecordReader.
      */
+    @Test
     public void testNextKeyValue() throws Exception {
         RecordReader<Text, HadoopArcRecord> recordReader = myArcF.createRecordReader(split, tac);
         recordReader.initialize(split, tac);

@@ -125,6 +125,7 @@ public class HeritrixWrapper {
         } else if (nativeRecord instanceof WARCRecord) {
             WARCRecord warcRecord = (WARCRecord) nativeRecord;
             if (warcRecord.hasContentHeaders()){
+
                 Header[] headers = HttpParser.parseHeaders(nativeRecord, DEFAULT_ENCODING);
                 return headers;
             }
