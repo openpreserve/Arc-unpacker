@@ -40,11 +40,15 @@ public class ArcRecordReader implements RecordReader<Text,HadoopArcRecord>{
 
     @Override
     public boolean next(Text key, HadoopArcRecord value) throws IOException {
-
-        boolean more = archiveReaderDelegate.nextKeyValue();
-        key.set(archiveReaderDelegate.getCurrentID());
-        archiveReaderDelegate.getCurrentArcRecord(value);
-        return more;
+        try {
+            boolean more = archiveReaderDelegate.nextKeyValue();
+            key.set(archiveReaderDelegate.getCurrentID());
+            archiveReaderDelegate.getCurrentArcRecord(value);
+            return more;
+        } catch (Exception e){
+            System.out.println(e);
+            return false;
+        }
     }
 
 

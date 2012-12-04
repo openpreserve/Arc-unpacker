@@ -40,8 +40,8 @@ public class ArcRecordReaderTest {
     @Before
     public void setUp() throws Exception {
 
-        InputStream is = ArcRecordReaderTest.class.getResourceAsStream("/ONBdevSample.arc.gz");
-        File file = FileUtils.getTmpFile("archd", "arc.gz");
+        InputStream is = ArcRecordReaderTest.class.getResourceAsStream("/ONBdevSample.arc");
+        File file = FileUtils.getTmpFile("archd", "arc");
         OutputStream out = new FileOutputStream(file);
         int read = 0;
         byte[] bytes = new byte[1024];
@@ -83,20 +83,21 @@ public class ArcRecordReaderTest {
             String currType = currValue.getType();
             String currURL = currValue.getUrl();
             InputStream currStream = currValue.getContents();
-            String currContent;
+            String currContent= content2String(currStream);
             String myContentString;
-            int myContentStringIndex;
+            int myContentStringIndex ;
             Date currDate = currValue.getDate();
             int currHTTPrc = currValue.getHttpReturnCode();
             int currLength = currValue.getLength();
 
             System.out.println("KEY " + start + ": " + currKey + " MIME Type: " + currMIMEType + " Type: " + currType + " URL: " + currURL + " Date: " + currDate.toString() + " HTTPrc: " + currHTTPrc + " Length: " + currLength);
+            //System.out.println(currContent);
 
             // check example record 1 (first one and the header of the ARC file)
             if (start == 1) {
                 //"myContentString" is arbitrary sting snipped of which we know that it exists in the content stream and of which we know the position in the stream.
                 //We will search for the string int the content we read and compare it to the values we know.                
-                currContent = content2String(currStream);
+                //currContent = content2String(currStream);
                 myContentString = "<dcterms:isPartOf>";
                 myContentStringIndex = currContent.indexOf(myContentString);
                 //System.out.println("Search for: " + myContentString + "=> Index is: " + myContentStringIndex);
@@ -114,7 +115,7 @@ public class ArcRecordReaderTest {
             if (start == 105) {
                 //"myContentString" is arbitrary sting snipped of which we know that it exists in the content stream and of which we know the position in the stream.
                 //We will search for the string int the content we read and compare it to the values we know.   
-                currContent = content2String(currStream);
+                //currContent = content2String(currStream);
                 myContentString = "background-position:495px";
                 myContentStringIndex = currContent.indexOf(myContentString);
                 //System.out.println("Search for: " + myContentString + "=> Index is: " + myContentStringIndex);
@@ -132,7 +133,7 @@ public class ArcRecordReaderTest {
             if (start == 121) {
                 //"myContentString" is arbitrary sting snipped of which we know that it exists in the content stream and of which we know the position in the stream.
                 //We will search for the string int the content we read and compare it to the values we know.   
-                currContent = content2String(currStream);
+
                 myContentString = "enYf*X";
                 myContentStringIndex = currContent.indexOf(myContentString);
                 //System.out.println("Search for: " + myContentString + "=> Index is: " + myContentStringIndex);

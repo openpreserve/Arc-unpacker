@@ -38,8 +38,8 @@ public class WARCTest {
 
     public void setUpONBSample() throws Exception {
 
-        InputStream is = ArcRecordReaderTest.class.getResourceAsStream("/ONBdevSample.warc.gz");
-        File file = FileUtils.getTmpFile("archd", "warc.gz");
+        InputStream is = ArcRecordReaderTest.class.getResourceAsStream("/ONBdevSample.warc");
+        File file = FileUtils.getTmpFile("archd", "warc");
         OutputStream out = new FileOutputStream(file);
         int read = 0;
         byte[] bytes = new byte[1024];

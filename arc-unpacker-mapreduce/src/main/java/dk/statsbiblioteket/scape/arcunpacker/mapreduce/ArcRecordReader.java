@@ -67,6 +67,7 @@ public final class ArcRecordReader extends RecordReader<Text, HadoopArcRecord> {
 
         } catch (IOException ex) {
             Logger.getLogger(ArcRecordReader.class.getName()).log(Level.SEVERE, null, ex);
+            throw new IOException(ex);
         }
 
 
@@ -75,18 +76,28 @@ public final class ArcRecordReader extends RecordReader<Text, HadoopArcRecord> {
 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
-        return archiveReaderDelegate.nextKeyValue();
+        try {
+            boolean result = archiveReaderDelegate.nextKeyValue();
+            if (result){
+                key.set(archiveReaderDelegate.getCurrentID());
+                archiveReaderDelegate.getCurrentArcRecord(value);
+            }
+            return result;
+        } catch (Exception e){
+            //TODO proper logging
+
+            System.out.println(e);
+            return false;
+        }
     }
 
     @Override
-    public Text getCurrentKey() throws IOException, InterruptedException {
-        key.set(archiveReaderDelegate.getCurrentID());
+    public Text getCurrentKey(){
         return key;
     }
 
     @Override
-    public HadoopArcRecord getCurrentValue() throws IOException, InterruptedException {
-        archiveReaderDelegate.getCurrentArcRecord(value);
+    public HadoopArcRecord getCurrentValue() {
         return value;
     }
 
