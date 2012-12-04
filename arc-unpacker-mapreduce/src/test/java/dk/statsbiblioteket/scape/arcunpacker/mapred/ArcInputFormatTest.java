@@ -25,7 +25,7 @@ public class ArcInputFormatTest {
     public void testGetRecordReaderOnArc() throws Exception {
         ArcInputFormat inputFormat = new ArcInputFormat();
         JobConf jobConf = new JobConf();
-        File file = new File("src/test/resources/IAH-20080430204825-00000-blackbook.arc.gz");
+        File file = new File(Thread.currentThread().getContextClassLoader().getResource("IAH-20080430204825-00000-blackbook.arc.gz").toURI());
         InputSplit split = new FileSplit(new Path(file.getAbsolutePath()),0,file.length(),jobConf);
         Reporter reporter = Reporter.NULL;
         RecordReader<Text, HadoopArcRecord> recordReader = inputFormat.getRecordReader(split, jobConf, reporter);
@@ -50,7 +50,7 @@ public class ArcInputFormatTest {
     public void testGetRecordReaderOnWArc() throws Exception {
         ArcInputFormat inputFormat = new ArcInputFormat();
         JobConf jobConf = new JobConf();
-        File file = new File("src/test/resources/IAH-20080430204825-00000-blackbook.warc.gz");
+         File file = new File(Thread.currentThread().getContextClassLoader().getResource("IAH-20080430204825-00000-blackbook.warc.gz").toURI());
         InputSplit split = new FileSplit(new Path(file.getAbsolutePath()),0,file.length(),jobConf);
         Reporter reporter = Reporter.NULL;
         RecordReader<Text, HadoopArcRecord> recordReader = inputFormat.getRecordReader(split, jobConf, reporter);
