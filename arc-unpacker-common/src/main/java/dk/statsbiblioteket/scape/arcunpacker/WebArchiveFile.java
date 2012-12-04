@@ -17,7 +17,7 @@ public class WebArchiveFile {
         this.archiveID = archiveID;
         this.unpackConfig = unpackConfig;
         this.contents = new FileInputStream(contents);
-        archivereader = new HeritrixWrapper(archiveID,this.contents,length);//ArchiveReaderFactory.get(archiveID, contents, true);
+        archivereader = new HeritrixWrapper(archiveID,this.contents,length);//ArchiveReaderFactory.getARC(archiveID, contents, true);
 
     }
 
