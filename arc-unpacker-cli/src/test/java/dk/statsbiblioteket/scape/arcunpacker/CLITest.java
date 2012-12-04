@@ -30,8 +30,8 @@ public class CLITest {
 
         File unpack = new File("build/testunpack");
         FileUtils.deleteDirectory(unpack);
-        CLI.main(new String[]{"-f", path, "-naming", "MD5", "-o", unpack.getAbsolutePath()});
-        assertThat(unpack.list().length, is(261));
+        CLI.main(new String[]{"-f", path, "-naming", "MD5", "-o", unpack.getAbsolutePath(),"-reports",unpack.getAbsolutePath()+"/reports"});
+        assertThat(unpack.list().length, is(262));
         FileUtils.deleteDirectory(unpack);
 
 

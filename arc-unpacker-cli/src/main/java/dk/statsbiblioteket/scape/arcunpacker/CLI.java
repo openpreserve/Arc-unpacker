@@ -8,6 +8,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.text.*;
 
@@ -33,9 +34,12 @@ public class CLI {
 
     public static final Option NAME_OPTION =
             new Option("naming",true, "Naming. One of "+ UnpackConfig.Naming.MD5+","+ UnpackConfig.Naming.OFFSET+","+
-                                      UnpackConfig.Naming.URL+". "+ UnpackConfig.Naming.URL+" by default");
+                    UnpackConfig.Naming.URL+". "+ UnpackConfig.Naming.URL+" by default");
 
     private static Options options;
+    private static Option REPORTS_OPTION = new Option("reports",true, "Create reports with header information and URL information from the server");
+
+
     static{
         options = new Options();
         INFILE_OPTION.setRequired(true);
@@ -44,6 +48,7 @@ public class CLI {
         options.addOption(MINRESPONSE_OPTION);
         options.addOption(MAXRESPONSE_OPTION);
         options.addOption(NAME_OPTION);
+        options.addOption(REPORTS_OPTION);
 
     }
 
@@ -80,6 +85,12 @@ public class CLI {
         File outdir = new File(cmd.getOptionValue(OUTDIR_OPTION.getOpt(), DEFAULT_OUTPUT_FILE));
         int minResponse = Integer.parseInt(cmd.getOptionValue(MINRESPONSE_OPTION.getOpt(), DEFAULT_MINRESPONSE + ""));
         int maxResponse = Integer.parseInt(cmd.getOptionValue(MAXRESPONSE_OPTION.getOpt(), DEFAULT_MAXRESPONSE + ""));
+        String reportDirString = cmd.getOptionValue(REPORTS_OPTION.getOpt());
+        File reportDir = null;
+        if (reportDirString != null){
+            reportDir = new File(reportDirString);
+            reportDir.mkdirs();
+        }
         UnpackConfig.Naming naming =
                 UnpackConfig.Naming.valueOf(cmd.getOptionValue(NAME_OPTION.getOpt(), UnpackConfig.Naming.MD5.name()));
 
@@ -89,6 +100,9 @@ public class CLI {
             ArcRecord resource = webArchiveFile.next();
             while (resource != null){
                 unpackResource(resource,outdir,unpackConfig);
+                if (reportDir != null){
+                    unpackReport(resource,reportDir,unpackConfig);
+                }
                 resource = webArchiveFile.next();
             }
 
@@ -99,7 +113,56 @@ public class CLI {
         }
     }
 
+    private static void unpackReport(ArcRecord resource, File reportDir, UnpackConfig config) throws IOException {
+        ByteBuffer contents = readReport(resource);
+        File outfile = new File(reportDir, getEncodedPath(resource, config.getNaming())+".report");
+        writeContentToFile(outfile, contents);
+        outfile.setLastModified(resource.getDate().getTime());
+    }
 
+    private static ByteBuffer readReport(ArcRecord resource) {
+        StringWriter report = new StringWriter();
+        report.append("Arc-file:");
+        report.append(resource.getArcFile());
+        report.append("\n");
+
+        report.append("ID:");
+        report.append(resource.getID());
+        report.append("\n");
+
+        report.append("MIME-Type:");
+        report.append(resource.getMimeType());
+        report.append("\n");
+
+
+        report.append("Type:");
+        report.append(resource.getType());
+        report.append("\n");
+
+
+        report.append("Url:");
+        report.append(resource.getUrl());
+        report.append("\n");
+
+        report.append("Date:");
+        report.append(resource.getDate().toString());
+        report.append("\n");
+
+        report.append("Http-Return-Code:");
+        report.append(resource.getHttpReturnCode()+"");
+        report.append("\n");
+
+        report.append("Length:");
+        report.append(resource.getLength()+"");
+        report.append("\n");
+
+        report.append("Offset:");
+        report.append(resource.getOffsetInArc()+"");
+        report.append("\n");
+
+
+        return ByteBuffer.wrap(report.toString().getBytes());
+    }
 
     private static void unpackResource(ArcRecord archivedResource, File outdir, UnpackConfig config)
             throws IOException, java.text.ParseException {
@@ -134,7 +197,7 @@ public class CLI {
     public static String getEncodedPath(ArcRecord record, UnpackConfig.Naming pathNamingScheme) {
 
         String path = "/" + record.getUrl().replace(":", "/").replaceAll("/+",
-                                                                         "/");
+                "/");
 
         switch (pathNamingScheme){
             case URL:
