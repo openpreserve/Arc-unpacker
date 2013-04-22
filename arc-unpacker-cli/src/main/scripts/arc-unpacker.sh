@@ -1,2 +1,3 @@
 #!/bin/sh
-java -jar lib/arc-unpacker-cli-*.jar $*
+# TODO: make independent from CWD
+java -cp 'lib/*' dk.statsbiblioteket.scape.arcunpacker.CLI $*
