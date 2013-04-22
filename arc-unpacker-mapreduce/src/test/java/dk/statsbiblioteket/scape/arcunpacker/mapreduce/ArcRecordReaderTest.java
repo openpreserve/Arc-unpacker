@@ -106,7 +106,7 @@ public class ArcRecordReaderTest {
                 assertEquals("MIME Type not equal","text/plain", currMIMEType);
                 assertEquals("Response type not equal","response", currType);
                 assertEquals("URL not equal","filedesc://8839-51-20120619072058-00000-testcrawler02.onb.ac.at.arc", currURL);
-                assertEquals("Date not equal","Tue Jun 19 07:20:58 CEST 2012", currDate.toString());
+                assertEquals("Date not equal",1340083258000L, currDate.getTime());
                 assertEquals("HTTPrc not equal",-1, currHTTPrc);
                 assertEquals("Record length not equal",1209, currLength);
                 assertEquals("Content seems not to be correct",530, myContentStringIndex);
@@ -124,7 +124,7 @@ public class ArcRecordReaderTest {
                 assertEquals("MIME Type not equal","text/css", currMIMEType);
                 assertEquals("Response type not equal","response", currType);
                 assertEquals("URL not equal","http://www.onb.ac.at/sammlungen/CSS_template_literaturarchiv_small.css", currURL);
-                assertEquals("Date Type not equal","Tue Jun 19 07:21:40 CEST 2012", currDate.toString());
+                assertEquals("Date Type not equal", 1340083300000L, currDate.getTime());
                 assertEquals("HTTPrc not equal",200, currHTTPrc);
                 assertEquals("Length Type not equal",185, currLength);
                 assertEquals("Content seems not to be correct",117, myContentStringIndex);
