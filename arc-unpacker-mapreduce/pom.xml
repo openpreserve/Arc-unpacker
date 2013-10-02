@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>dk.statsbiblioteket.scape</groupId>
+        <groupId>eu.scape-project</groupId>
         <artifactId>arc-unpacker-parent</artifactId>
         <version>0.5.1-SNAPSHOT</version>
     </parent>
@@ -27,7 +27,7 @@
         </dependency>
 
         <dependency>
-            <groupId>dk.statsbiblioteket.scape</groupId>
+            <groupId>eu.scape-project</groupId>
             <artifactId>arc-unpacker-common</artifactId>
             <version>0.5.1-SNAPSHOT</version>
         </dependency>
