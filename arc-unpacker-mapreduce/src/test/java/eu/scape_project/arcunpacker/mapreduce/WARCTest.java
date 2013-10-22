@@ -148,7 +148,7 @@ public class WARCTest {
                 assertEquals("MIME Type not equal","application/warc-fields", currMIMEType);
                 assertEquals("Response type not equal","warcinfo", currType);
                 assertEquals("URL not equal",null, currURL);
-                assertEquals("Date not equal",1340082405000L, currDate.getTime());
+                assertEquals("Date not equal",1340086005000L, currDate.getTime());
                 assertEquals("HTTPrc not equal",-1, currHTTPrc);
                 assertEquals("Record length not equal",457, currLength);
                 assertEquals("Content seems not to be correct",205, myContentStringIndex);
@@ -166,7 +166,7 @@ public class WARCTest {
                 assertEquals("MIME Type not equal","image/jpeg", currMIMEType);
                 assertEquals("Response type not equal","response", currType);
                 assertEquals("URL not equal","http://www.onb.ac.at/images/Musiksammlung/exlibris.jpg", currURL);
-                assertEquals("Date Type not equal",1340082549000L, currDate.getTime());
+                assertEquals("Date Type not equal",1340086149000L, currDate.getTime());
                 assertEquals("HTTPrc not equal",200, currHTTPrc);
                 assertEquals("Length Type not equal",18538, currLength);
                 assertEquals("Content seems not to be correct",282, myContentStringIndex);
@@ -184,7 +184,7 @@ public class WARCTest {
                 assertEquals("MIME Type not equal","application/http; msgtype=request", currMIMEType);
                 assertEquals("Response type not equal","request", currType);
                 assertEquals("URL not equal","http://www.onb.ac.at/images/kartensammlung/globenmuseum1_indexA.jpg", currURL);
-                assertEquals("Date Type not equal",1340082681000L, currDate.getTime());
+                assertEquals("Date Type not equal",1340086281000L, currDate.getTime());
                 assertEquals("HTTPrc not equal",-1, currHTTPrc);
                 assertEquals("Length Type not equal",0, currLength);
                 assertEquals("Content seems not to be correct",0, myContentStringIndex);
@@ -235,7 +235,7 @@ public class WARCTest {
                 assertEquals("MIME Type not equal","application/warc-fields", currMIMEType);
                 assertEquals("Response type not equal","warcinfo", currType);
                 assertEquals("URL not equal",null, currURL);
-                assertEquals("Date not equal",1209581305000L, currDate.getTime());
+                assertEquals("Date not equal",1209584905000L, currDate.getTime());
                 assertEquals("HTTPrc not equal",-1, currHTTPrc);
                 assertEquals("Record length not equal",482, currLength);
                 assertEquals("Content seems not to be correct",-1, myContentStringIndex);
@@ -253,7 +253,7 @@ public class WARCTest {
                 assertEquals("MIME Type not equal","text/dns", currMIMEType);
                 assertEquals("Response type not equal","response", currType);
                 assertEquals("URL not equal","dns:ia341007.us.archive.org", currURL);
-                assertEquals("Date Type not equal",1209581352000L, currDate.getTime());
+                assertEquals("Date Type not equal",1209584952000L, currDate.getTime());
                 assertEquals("HTTPrc not equal",-1, currHTTPrc);
                 assertEquals("Length Type not equal",64, currLength);
                 assertEquals("Content seems not to be correct",-1, myContentStringIndex);
@@ -271,7 +271,7 @@ public class WARCTest {
                 assertEquals("MIME Type not equal","application/http; msgtype=request", currMIMEType);
                 assertEquals("Response type not equal","request", currType);
                 assertEquals("URL not equal","http://www.archive.org/images/guitar.jpg", currURL);
-                assertEquals("Date Type not equal",1209581415000L, currDate.getTime());
+                assertEquals("Date Type not equal",1209585015000L, currDate.getTime());
                 assertEquals("HTTPrc not equal",-1, currHTTPrc);
                 assertEquals("Length Type not equal",0, currLength);
                 assertEquals("Content seems not to be correct",0, myContentStringIndex);
